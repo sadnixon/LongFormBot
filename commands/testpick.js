@@ -128,7 +128,7 @@ async function execute(interaction, user) {
     targetUsers.push(interaction.options.getString(`player${i}`));
   }
   const targetIds = targetUsers
-    .filter((e) => e === e)
+    .filter((e) => e != null)
     //.map((e) => e.id)
     .filter((e) => currentPlayers.includes(e));
   if (
