@@ -6,6 +6,12 @@ const data = new SlashCommandBuilder()
   .setName('reg')
   .setDescription(
     'Register the channel you are in as your private game channel',
+  )
+  .addUserOption((option) =>
+    option
+      .setName('user')
+      .setDescription('The user to reg for, if you are an admin')
+      .setRequired(false),
   );
 
 async function execute(interaction, user) {
@@ -18,7 +24,11 @@ async function execute(interaction, user) {
 
   const playerChannels = await gameInfo.get('player_channels');
 
-  const newUser = interaction.user;
+  const targetUser = interaction.options.getUser('user');
+  let newUser = interaction.user;
+  if (user.isAuthorized && targetUser) {
+    newUser = targetUser;
+  }
   const id = newUser.id;
   const displayName = newUser.globalName ?? newUser.username;
 
@@ -32,7 +42,7 @@ async function execute(interaction, user) {
 
   await interaction.reply({
     content: `You have now registered this channel as your private channel for games!`,
-    ephemeral: true,
+    ephemeral: false,
   });
 }
 

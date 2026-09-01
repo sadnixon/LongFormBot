@@ -10,7 +10,13 @@ const { standardEmbed } = require('../message-helpers');
 
 const data = new SlashCommandBuilder()
   .setName('in')
-  .setDescription('Join the Long Form game, if it is not ongoing');
+  .setDescription('Join the Long Form game, if it is not ongoing')
+  .addUserOption((option) =>
+    option
+      .setName('user')
+      .setDescription('The user to in for, if you are an admin')
+      .setRequired(false),
+  );
 
 async function createPrivateChannel(guild, userDisplay, userId) {
   const channel = await guild.channels.create({
@@ -68,13 +74,19 @@ async function execute(interaction, user) {
     gameChannels['general'].channelId,
   );
 
+  const targetUser = interaction.options.getUser('user');
+  let newUser = interaction.user;
+  if (user.isAuthorized && targetUser) {
+    newUser = targetUser;
+  }
+
   // Don't add the user twice
-  if (!currentPlayers.includes(interaction.user.id)) {
-    currentPlayers.push(interaction.user.id);
+  if (!currentPlayers.includes(newUser.id)) {
+    currentPlayers.push(newUser.id);
 
     await gameInfo.set('players', currentPlayers);
     await genChannel.send(
-      `<@${interaction.user.id}> has now joined the lobby! Player count is at ${currentPlayers.length}/13.`,
+      `<@${newUser.id}> has now joined the lobby! Player count is at ${currentPlayers.length}/13.`,
     );
     await interaction.reply({
       content: `You have joined the lobby!`,

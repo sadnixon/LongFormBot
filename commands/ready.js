@@ -18,6 +18,12 @@ const data = new SlashCommandBuilder()
         'Whether or not you want to be in the game that is starting',
       )
       .setRequired(true),
+  )
+  .addUserOption((option) =>
+    option
+      .setName('user')
+      .setDescription('The user to in for, if you are an admin')
+      .setRequired(false),
   );
 
 async function execute(interaction, user) {
@@ -30,10 +36,17 @@ async function execute(interaction, user) {
   const gameOngoing = await gameInfo.get('inPlay');
   const gameReadying = await gameInfo.get('inReady');
   const currentPlayers = await gameInfo.get('players');
+
+  const targetUser = interaction.options.getUser('user');
+  let newUser = interaction.user;
+  if (user.isAuthorized && targetUser) {
+    newUser = targetUser;
+  }
+
   if (
     gameOngoing ||
     (!gameOngoing && !gameReadying) ||
-    !currentPlayers.includes(interaction.user.id)
+    !currentPlayers.includes(newUser.id)
   ) {
     await interaction.reply({
       content: `It's not time for you to ready up!`,
@@ -46,8 +59,8 @@ async function execute(interaction, user) {
   const userReady = interaction.options.getBoolean('in');
 
   if (userReady) {
-    if (!readyPlayers.includes(interaction.user.id)) {
-      readyPlayers.push(interaction.user.id);
+    if (!readyPlayers.includes(newUser.id)) {
+      readyPlayers.push(newUser.id);
     }
     await interaction.reply({
       content: `You have now readied up!`,
@@ -60,7 +73,7 @@ async function execute(interaction, user) {
     await gameInfo.set('readyPlayers', []);
     await gameInfo.set(
       'players',
-      currentPlayers.filter((x) => x !== interaction.user.id),
+      currentPlayers.filter((x) => x !== newUser.id),
     );
     await gameInfo.set('inReady', false);
   }
