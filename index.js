@@ -49,7 +49,7 @@ if (ENABLE_SENTRY) {
 // Database
 // -----------------------------------------------------------------------------
 
-const MONGO_URI = 'mongodb://localhost:27017/discord-sh';
+const MONGO_URI = 'mongodb://localhost:27017/longformbot';
 
 global.authorizedDataSetters = ENABLE_DB
   ? new Keyv({
