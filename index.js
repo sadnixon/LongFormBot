@@ -12,8 +12,8 @@ const {
   ActivityType,
 } = require('discord.js');
 
-const { Keyv } = require('keyv');
-const KeyvMongo = require('@keyv/mongo');
+const Keyv = require('keyv').default;
+const KeyvMongo = require('@keyv/mongo').default;
 const Sentry = require('@sentry/node');
 
 const {
@@ -26,13 +26,9 @@ const {
 
 const { errorMessage } = require('./message-helpers');
 
-const {
-  startScheduler,
-} = require('./scheduler');
+const { startScheduler } = require('./scheduler');
 
-const {
-  initializeTaskHandlers,
-} = require('./task-handlers');
+const { initializeTaskHandlers } = require('./task-handlers');
 
 // -----------------------------------------------------------------------------
 // Sentry
@@ -49,31 +45,25 @@ if (ENABLE_SENTRY) {
 // Database
 // -----------------------------------------------------------------------------
 
-const MONGO_URI = 'mongodb://localhost:27017/longformbot';
+const mongoStore = new KeyvMongo('mongodb://localhost:27017/longformbot');
 
 global.authorizedDataSetters = ENABLE_DB
   ? new Keyv({
-      store: new KeyvMongo({
-        url: MONGO_URI,
-      }),
+      store: mongoStore,
       namespace: 'authorized_data_setter',
     })
   : new Keyv();
 
 global.gameInfo = ENABLE_DB
   ? new Keyv({
-      store: new KeyvMongo({
-        url: MONGO_URI,
-      }),
+      store: mongoStore,
       namespace: 'game_info',
     })
   : new Keyv();
 
 global.schedDB = ENABLE_DB
   ? new Keyv({
-      store: new KeyvMongo({
-        url: MONGO_URI,
-      }),
+      store: mongoStore,
       namespace: 'sched_db',
     })
   : new Keyv();
@@ -104,9 +94,7 @@ const client = new Client({
     GatewayIntentBits.DirectMessages,
   ],
 
-  partials: [
-    Partials.Channel,
-  ],
+  partials: [Partials.Channel],
 });
 
 // -----------------------------------------------------------------------------
@@ -210,21 +198,15 @@ client.on(Events.InteractionCreate, async (interaction) => {
   const command = client.commands.get(interaction.commandName);
 
   if (!command) {
-    console.warn(
-      `Received unknown slash command: /${interaction.commandName}`
-    );
+    console.warn(`Received unknown slash command: /${interaction.commandName}`);
 
     if (interaction.replied || interaction.deferred) {
       await interaction.followUp(
-        errorMessage(
-          `Unknown command: /${interaction.commandName}`
-        )
+        errorMessage(`Unknown command: /${interaction.commandName}`),
       );
     } else {
       await interaction.reply(
-        errorMessage(
-          `Unknown command: /${interaction.commandName}`
-        )
+        errorMessage(`Unknown command: /${interaction.commandName}`),
       );
     }
 
@@ -236,14 +218,12 @@ client.on(Events.InteractionCreate, async (interaction) => {
     // Authorization
     // -------------------------------------------------------------------------
 
-    const authorizedUsers =
-      (await authorizedDataSetters.get('auth')) ?? [];
+    const authorizedUsers = (await authorizedDataSetters.get('auth')) ?? [];
 
     const isOwner = interaction.user.id === OWNER;
 
     const isAuthorized =
-      isOwner ||
-      authorizedUsers.includes(interaction.user.id);
+      isOwner || authorizedUsers.includes(interaction.user.id);
 
     // -------------------------------------------------------------------------
     // User information passed to commands
@@ -260,15 +240,12 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
     await command.execute(interaction, user);
   } catch (error) {
-    console.error(
-      `Error executing /${interaction.commandName}:`,
-      error
-    );
+    console.error(`Error executing /${interaction.commandName}:`, error);
 
     Sentry.captureException(error);
 
     const response = errorMessage(
-      `There was an error trying to execute \`/${interaction.commandName}\`.`
+      `There was an error trying to execute \`/${interaction.commandName}\`.`,
     );
 
     try {
@@ -278,10 +255,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
         await interaction.reply(response);
       }
     } catch (replyError) {
-      console.error(
-        'Failed to send command error response:',
-        replyError
-      );
+      console.error('Failed to send command error response:', replyError);
 
       Sentry.captureException(replyError);
     }
