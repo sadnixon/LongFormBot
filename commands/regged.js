@@ -3,8 +3,8 @@
 const { SlashCommandBuilder } = require('discord.js');
 
 const data = new SlashCommandBuilder()
-  .setName('authorized')
-  .setDescription('See authorized users');
+  .setName('regged')
+  .setDescription('See regged users');
 
 async function execute(interaction, user) {
   // Only authorized users can authorize other users
