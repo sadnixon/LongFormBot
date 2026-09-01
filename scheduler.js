@@ -67,8 +67,8 @@ async function scheduleTask(type, data, executeAt) {
  * Schedule a task exactly X hours from now.
  */
 async function scheduleInXHours(type, data, hours) {
-  //const executeAt = Date.now() + hours * 60 * 60 * 1000;
-  const executeAt = Date.now() + hours * 3 * 1000;
+  const executeAt = Date.now() + hours * 60 * 60 * 1000;
+  //const executeAt = Date.now() + hours * 3 * 1000;
 
   return scheduleTask(type, data, executeAt);
 }
