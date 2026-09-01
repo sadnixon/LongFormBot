@@ -379,9 +379,7 @@ async function sendVoteState(
   }
 
   const cMissionPicks = gameState.missionPicks[missionIndex];
-  const cMissionPickers = gameState.missionPickers[missionIndex].filter(
-    (e) => e in cMissionPicks,
-  );
+  const cMissionPickers = gameState.missionPickers[missionIndex];
   const cMissionVotes = gameState.missionVotes[missionIndex];
 
   let resultText = '';
@@ -408,7 +406,7 @@ async function sendVoteState(
     `${cMissionPickers
       .map(
         (e) =>
-          `**<@${e}>'s Mission (${cMissionPicks[e].team.map((e1) => `<@${e1}>`).join(' + ')})**\n${optionVotes(e).length} Votes: ${optionVotes(
+          `**<@${e}>'s Mission (${e in cMissionPicks ? cMissionPicks[e].team.map((e1) => `<@${e1}>`).join(' + ') : ''})**\n${optionVotes(e).length} Votes: ${optionVotes(
             e,
           )
             .map((e1) => `<@${e1}>`)
