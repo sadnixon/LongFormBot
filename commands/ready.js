@@ -61,10 +61,11 @@ async function execute(interaction, user) {
   if (userReady) {
     if (!readyPlayers.includes(newUser.id)) {
       readyPlayers.push(newUser.id);
+      await gameInfo.set('readyPlayers',readyPlayers);
     }
     await interaction.reply({
       content: `You have now readied up!`,
-      ephemeral: true,
+      ephemeral: false,
     });
     if (readyPlayers.length === 13) {
       await startGame(interaction);
