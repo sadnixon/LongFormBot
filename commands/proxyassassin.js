@@ -89,11 +89,11 @@ async function execute(interaction, user) {
     !currentPlayers.includes(targetPlayer.id) ||
     (targetPlayer2 && !currentPlayers.includes(targetPlayer2.id)) ||
     ['Assassin', 'Morgana', 'Mordred', 'Witch'].includes(
-      gameState.players[targetPlayerIndex].role,
+      gameState.players[targetPlayerIndex]?.role,
     ) ||
     (targetPlayer2 &&
       ['Assassin', 'Morgana', 'Mordred', 'Witch'].includes(
-        gameState.players[targetPlayer2Index].role,
+        gameState.players[targetPlayer2Index]?.role,
       ))
   ) {
     return interaction.reply({

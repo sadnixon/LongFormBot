@@ -91,7 +91,7 @@ async function execute(interaction, user) {
   if (
     !currentPlayers.includes(targetPlayer.id) ||
     ['Assassin', 'Morgana', 'Mordred', 'Witch'].includes(
-      gameState.players[targetPlayerIndex].role,
+      gameState.players[targetPlayerIndex]?.role,
     ) ||
     Object.keys(gameState.witchCurses).length > 1 ||
     (Object.keys(gameState.witchCurses).length === 1 &&
