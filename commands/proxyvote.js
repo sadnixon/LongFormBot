@@ -87,6 +87,8 @@ async function execute(interaction, user) {
     });
   }
 
+  gameState.missionVotes[gameState.missionIndex][playerIndex] = targetMission;
+
   const gameChannels = await gameInfo.get('game_channels');
   const pickChannel = await interaction.guild.channels.fetch(
     gameChannels['picks'].channelId,
