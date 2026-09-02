@@ -67,6 +67,10 @@ async function execute(interaction, user) {
     gameState.passedMissions = [];
     await gameInfo.set('gameState', gameState);
     await schedDB.clear();
+  } else if (voidType === 'special') {
+    const gameState = await gameInfo.get('gameState');
+    gameState.phaseTimers = [{taskId: "awhwhw",timeStamp: gameState.phaseEndStamp}];
+    await gameInfo.set('gameState', gameState);
   }
 
   await interaction.reply({
