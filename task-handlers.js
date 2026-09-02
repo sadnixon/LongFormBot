@@ -8,7 +8,11 @@ const {
   standardEmbed,
   endGame,
 } = require('./message-helpers');
-const { registerHandler, scheduleInXHours } = require('./scheduler');
+const {
+  registerHandler,
+  scheduleInXHours,
+  clearTasks,
+} = require('./scheduler');
 
 const missionSizes = [4, 5, 6, 7, 6, 7, 7];
 
@@ -28,6 +32,8 @@ function initializeTaskHandlers(discordClient) {
     const genChannel = await guild.channels.fetch(
       gameChannels['general'].channelId,
     );
+
+    gameState.phaseTimers = [];
 
     let mostVotes = 0;
     let mostVotesMissions = [];
@@ -83,15 +89,25 @@ function initializeTaskHandlers(discordClient) {
     const gameState = await gameInfo.get('gameState');
     const guild = await client.guilds.fetch(gameState.guildId);
 
+    gameState.phaseTimers = [];
+
     const notVoted = gameState.passedMissions[
       gameState.missionIndex
     ].team.filter((e) => !(e in gameState.missionSFs[gameState.missionIndex]));
 
+    const validOutcomes = _.pick(
+      gameState.missionSFs[missionIndex],
+      gameState.passedMissions[missionIndex].team,
+    );
+    const failCount = Object.values(validOutcomes).filter(
+      (e) => e === 'fail',
+    ).length;
+
     let possibleOutcomes = [];
     for (const player of notVoted) {
       const playerIndex = gameState.players.map((e) => e.id).indexOf(player);
-      if (gameState.players[playerIndex].team === 'Spy') {
-        possibleOutcomes = ['succeed', 'fail'];
+      if (gameState.players[playerIndex].team === 'Spy' && failCount > 0) {
+        possibleOutcomes = ['fail'];
         //possibleOutcomes = ['succeed'];
       } else {
         possibleOutcomes = ['succeed'];
@@ -120,6 +136,9 @@ function initializeTaskHandlers(discordClient) {
     const pickChannel = await guild.channels.fetch(
       gameChannels['picks'].channelId,
     );
+
+    //removing from gameState the first timer
+    gameState.phaseTimers = gameState.phaseTimers.slice(1);
 
     const notPicked = gameState.missionPickers[gameState.missionIndex].filter(
       (e) => !(e in Object.keys(gameState.missionPicks)),
@@ -170,6 +189,8 @@ function initializeTaskHandlers(discordClient) {
     }
 
     if (mostVotes >= 7) {
+      await clearTasks();
+      const gameState = await gameInfo.get('gameState');
       gameState.currentState = 'missionWait';
       gameState.passedMissions.push(
         gameState.missionPicks[gameState.missionIndex][mostVotesMission],
@@ -193,8 +214,6 @@ function initializeTaskHandlers(discordClient) {
       } else {
         await scheduleInXHours('end_mission', {}, 6);
       }
-    } else {
-      await scheduleInXHours('end_vote', {}, 2);
     }
   });
 
@@ -208,6 +227,8 @@ function initializeTaskHandlers(discordClient) {
     const genChannel = await guild.channels.fetch(
       gameChannels['general'].channelId,
     );
+
+    gameState.phaseTimers = [];
 
     const targetPlayer = shuffleArray(
       currentPlayers.filter((e) => !gameState.refChain.includes(e)),
@@ -254,6 +275,7 @@ function initializeTaskHandlers(discordClient) {
       `${gameState.missionPickers[gameState.missionIndex].map((e) => `<@${e}>`).join(', ')}, it is time to pick a mission using /pick.`,
     );
     await scheduleInXHours('end_pick', {}, 16);
+    await scheduleInXHours('end_vote', {}, 18);
   });
 
   registerHandler('end_assassin', async (data) => {
@@ -265,6 +287,8 @@ function initializeTaskHandlers(discordClient) {
     const genChannel = await guild.channels.fetch(
       gameChannels['general'].channelId,
     );
+
+    gameState.phaseTimers = [];
 
     const possibleTargets = gameState.players
       .filter(

@@ -118,6 +118,7 @@ async function execute(interaction, user) {
     gameState.currentState === 'voteWait'
   ) {
     await clearTasks();
+    const gameState = await gameInfo.get('gameState');
     gameState.currentState = 'missionWait';
     gameState.passedMissions.push(
       gameState.missionPicks[gameState.missionIndex][targetMission],

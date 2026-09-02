@@ -44,6 +44,11 @@ async function execute(interaction, user) {
           "Vote on the possible missions (can be pre-submitted)",
       },
       {
+        name: '/unvote',
+        value:
+          "Unvote on the possible missions",
+      },
+      {
         name: '/mission',
         value:
           "Decide whether to succeed or fail an upcoming mission (can be pre-submitted)",
@@ -77,6 +82,11 @@ async function execute(interaction, user) {
         name: '/proxy[action]',
         value:
           "Perform a proxy action for a cospy",
+      },
+      {
+        name: '/ascend',
+        value:
+          "Ascend to Res Heaven",
       },
       {
         name: '/info',

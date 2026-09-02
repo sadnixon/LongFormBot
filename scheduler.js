@@ -60,9 +60,9 @@ async function scheduleTask(type, data, executeAt) {
 
   await schedDB.set('scheduled_tasks', taskIds);
 
-  const gameState = await gameInfo.get("gameState");
-  gameState.phaseEndStamp = executeAt;
-  await gameInfo.set("gameState",gameState);
+  const gameState = await gameInfo.get('gameState');
+  gameState.phaseTimers.push({ taskId: taskId, timeStamp: executeAt });
+  await gameInfo.set('gameState', gameState);
 
   return taskId;
 }
@@ -105,12 +105,12 @@ async function cancelTask(taskId) {
  * Clear all tasks.
  */
 async function clearTasks() {
-  const taskIds = (await schedDB.get('scheduled_tasks')) ?? [];
-
-  for (const taskId in taskIds) {
-    await schedDB.delete(`scheduled_task:${taskId}`);
+  const gameState = await gameInfo.get('gameState');
+  for (const timer of gameState.phaseTimers) {
+    await cancelTask(timer.taskId);
   }
-  await schedDB.set('scheduled_tasks', []);
+  gameState.phaseTimers = [];
+  await gameInfo.set('gameState',gameState);
   return true;
 }
 

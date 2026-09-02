@@ -4,7 +4,7 @@ const {
   PermissionFlagsBits,
 } = require('discord.js');
 const _ = require('lodash');
-const { clearTasks, scheduleInXHours } = require('./scheduler');
+const { clearTasks, scheduleInXHours, cancelTask } = require('./scheduler');
 
 const errorMessage = (message) => {
   return {
@@ -228,7 +228,7 @@ async function startGame(interaction) {
     witchPunished: false,
     assassinShot: [],
     currentState: 'pickWait',
-    phaseEndStamp: null,
+    phaseTimers: [],
   };
 
   console.log(startState);
@@ -240,6 +240,7 @@ async function startGame(interaction) {
     `${startState.missionPickers[startState.missionIndex].map((e) => `<@${e}>`).join(', ')}, it is time to pick a mission using /pick.`,
   );
   await scheduleInXHours('end_pick', {}, 16);
+  await scheduleInXHours('end_vote', {}, 18);
 }
 
 async function sendGameState(
@@ -348,7 +349,7 @@ async function sendGameState(
 
   const embed = standardEmbed(
     'Current Game State:',
-    `${gameState.players.map((e, i) => `${i + 1}. ${playerHist(e.id)}<@${e.id}> ${pCrowns[i]}${pRef[i]}${reveal ? `**(${e.role})**` : ''}`).join('\n')}\n**Ref Chain:** ${gameState.refChain.map((e) => `<@${e}>`).join('-> ')}\n\n**Missions:**\n${missionSection}\n\n${witchHistory}**Waiting on:** ${waitingOnIds.map((e) => `<@${e}>`).join(', ')}\n\n**State:** ${gameState.currentState}${gameState.phaseEndStamp ? `\nPhase Ends <t:${Math.floor(gameState.phaseEndStamp / 1000)}:R>` : ''}`,
+    `${gameState.players.map((e, i) => `${i + 1}. ${playerHist(e.id)}<@${e.id}> ${pCrowns[i]}${pRef[i]}${reveal ? `**(${e.role})**` : ''}`).join('\n')}\n**Ref Chain:** ${gameState.refChain.map((e) => `<@${e}>`).join('-> ')}\n\n**Missions:**\n${missionSection}\n\n${witchHistory}**Waiting on:** ${waitingOnIds.map((e) => `<@${e}>`).join(', ')}\n\n**State:** ${gameState.currentState}${gameState.phaseTimers.length > 0 ? `\nPhase Ends <t:${Math.floor(gameState.phaseTimers[0].timeStamp / 1000)}:R>` : ''}`,
   );
 
   await channel.send(embed);
@@ -359,6 +360,7 @@ async function sendVoteState(
   chanSelect = 'picks',
   index = -1,
   interaction = null,
+  reveal = false,
 ) {
   const gameChannels = await gameInfo.get('game_channels');
   const gameState = await gameInfo.get('gameState');
@@ -396,6 +398,18 @@ async function sendVoteState(
     resultText = `\n\n**<@${gameState.passedMissions[missionIndex].id}> Result: ${gameState.missionResults[missionIndex].toUpperCase()} with ${failCount} fail(s)**`;
   }
 
+  let failsuccText = '';
+  if (reveal) {
+    failsuccText = `\n\nResult Subs:\n${Object.keys(
+      gameState.missionSFs[missionIndex],
+    )
+      .map(
+        (e) =>
+          `<@${e}>: ${gameState.missionSFs[missionIndex][e].toUpperCase()}`,
+      )
+      .join(', ')}`;
+  }
+
   const optionVotes = (option) => {
     return gameState.players
       .filter((e, i) => cMissionVotes[i] === option)
@@ -415,7 +429,7 @@ async function sendVoteState(
       )
       .join('\n\n')}\n\nNot Voted: ${optionVotes(null)
       .map((e1) => `<@${e1}>`)
-      .join(', ')}${resultText}`,
+      .join(', ')}${resultText}${failsuccText}`,
   );
 
   await channel.send(embed);
@@ -558,6 +572,7 @@ async function missionCompletion(client) {
         `${gameState.missionPickers[gameState.missionIndex].map((e) => `<@${e}>`).join(', ')}, it is time to pick a mission using /pick.`,
       );
       await scheduleInXHours('end_pick', {}, 16);
+      await scheduleInXHours('end_vote', {}, 18);
     } else {
       //Going to assassination case
       gameState.currentState = 'assassinWait';

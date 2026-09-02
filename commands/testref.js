@@ -62,7 +62,7 @@ async function execute(interaction, user) {
     });
   }
   const gameOngoing = await gameInfo.get('inPlay');
-  const gameState = await gameInfo.get('gameState');
+  let gameState = await gameInfo.get('gameState');
   const currentPlayers = await gameInfo.get('players');
   if (
     !gameOngoing ||
@@ -84,6 +84,7 @@ async function execute(interaction, user) {
   }
 
   await clearTasks();
+  gameState = await gameInfo.get('gameState');
   gameState.refChain.push(targetPlayer);
   gameState.currentState = 'pickWait';
   const nextUpIndex =
@@ -133,6 +134,7 @@ async function execute(interaction, user) {
     `${gameState.missionPickers[gameState.missionIndex].map((e) => `<@${e}>`).join(', ')}, it is time to pick a mission using /pick.`,
   );
   await scheduleInXHours('end_pick', {}, 16);
+  await scheduleInXHours('end_vote', {}, 18);
 }
 
 module.exports = {

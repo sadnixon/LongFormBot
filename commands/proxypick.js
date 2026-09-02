@@ -12,7 +12,7 @@ const {
   sendVoteState,
   isUnique,
 } = require('../message-helpers');
-const { clearTasks, scheduleInXHours } = require('../scheduler');
+const { clearTasks, scheduleInXHours, cancelTask } = require('../scheduler');
 
 const data = new SlashCommandBuilder()
   .setName('proxypick')
@@ -161,57 +161,48 @@ async function execute(interaction, user) {
     ephemeral: true,
   });
 
+  let mostVotes = 0;
+  let mostVotesMission;
+  for (const mission of gameState.missionPickers[gameState.missionIndex]) {
+    const voteCount = gameState.missionVotes[gameState.missionIndex].filter(
+      (e) => e === mission,
+    ).length;
+    if (voteCount > mostVotes) {
+      mostVotes = voteCount;
+      mostVotesMission = mission;
+    }
+  }
+
   if (
     Object.keys(gameState.missionPicks[gameState.missionIndex]).length ===
-    gameState.missionPickers[gameState.missionIndex].length
+      gameState.missionPickers[gameState.missionIndex].length &&
+    mostVotes >= 7
   ) {
     await clearTasks();
-    gameState.currentState = 'voteWait';
-    await gameInfo.set('gameState', gameState);
-    await pickChannel.send(
-      `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nIt's time to vote for an M${gameState.missionIndex + 1}! Go cast your vote for one of the following choices with /vote.`,
+    const gameState = await gameInfo.get('gameState');
+    gameState.currentState = 'missionWait';
+    gameState.passedMissions.push(
+      gameState.missionPicks[gameState.missionIndex][mostVotesMission],
     );
+    await gameInfo.set('gameState', gameState);
     await sendVoteState(interaction.client);
+    await pickChannel.send(
+      `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe mission chosen by <@${mostVotesMission}> has passed!`,
+    );
     await sendGameState(interaction.client);
+    await genChannel.send(
+      `${gameState.passedMissions[gameState.missionIndex].team.map((e) => `<@${e}>`).join(' ')}\nIt's time to run M${gameState.missionIndex + 1}! Go decide if the mission will succeed or fail with /mission.`,
+    );
 
-    let mostVotes = 0;
-    let mostVotesMission;
-    for (const mission of gameState.missionPickers[gameState.missionIndex]) {
-      const voteCount = gameState.missionVotes[gameState.missionIndex].filter(
-        (e) => e === mission,
-      ).length;
-      if (voteCount > mostVotes) {
-        mostVotes = voteCount;
-        mostVotesMission = mission;
-      }
-    }
-
-    if (mostVotes >= 7) {
-      gameState.currentState = 'missionWait';
-      gameState.passedMissions.push(
-        gameState.missionPicks[gameState.missionIndex][mostVotesMission],
-      );
-      await gameInfo.set('gameState', gameState);
-      await pickChannel.send(
-        `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe mission chosen by <@${mostVotesMission}> has passed!`,
-      );
-      await sendGameState(interaction.client);
-      await genChannel.send(
-        `${gameState.passedMissions[gameState.missionIndex].team.map((e) => `<@${e}>`).join(' ')}\nIt's time to run M${gameState.missionIndex + 1}! Go decide if the mission will succeed or fail with /mission.`,
-      );
-
-      if (
-        gameState.passedMissions[gameState.missionIndex] &&
-        Object.keys(gameState.missionSFs[gameState.missionIndex]).filter((e) =>
-          gameState.passedMissions[gameState.missionIndex].team.includes(e),
-        ).length >= missionSizes[gameState.missionIndex]
-      ) {
-        await missionCompletion(interaction.client);
-      } else {
-        await scheduleInXHours('end_mission', {}, 6);
-      }
+    if (
+      gameState.passedMissions[gameState.missionIndex] &&
+      Object.keys(gameState.missionSFs[gameState.missionIndex]).filter((e) =>
+        gameState.passedMissions[gameState.missionIndex].team.includes(e),
+      ).length >= missionSizes[gameState.missionIndex]
+    ) {
+      await missionCompletion(interaction.client);
     } else {
-      await scheduleInXHours('end_vote', {}, 2);
+      await scheduleInXHours('end_mission', {}, 6);
     }
   }
 }
