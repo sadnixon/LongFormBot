@@ -60,6 +60,10 @@ async function scheduleTask(type, data, executeAt) {
 
   await schedDB.set('scheduled_tasks', taskIds);
 
+  const gameState = await gameInfo.get("gameState");
+  gameState.phaseEndStamp = executeAt;
+  await gameInfo.set("gameState",gameState);
+
   return taskId;
 }
 
