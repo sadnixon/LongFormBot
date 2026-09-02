@@ -121,7 +121,8 @@ async function execute(interaction, user) {
     gameState.missionVotes[gameState.missionIndex].filter(
       (e) => e === targetMission,
     ).length >= 7 &&
-    gameState.currentState === 'voteWait'
+    Object.keys(gameState.missionPicks[gameState.missionIndex]).length ===
+      gameState.missionPickers[gameState.missionIndex].length
   ) {
     await clearTasks();
     const gameState = await gameInfo.get('gameState');
