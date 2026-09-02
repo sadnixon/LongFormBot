@@ -64,6 +64,7 @@ async function execute(interaction, user) {
   } else if (voidType === 'phase') {
     const gameState = await gameInfo.get('gameState');
     gameState.currentState = 'voteWait';
+    gameState.passedMissions = [];
     await gameInfo.set('gameState', gameState);
     await schedDB.clear();
   }
