@@ -87,7 +87,7 @@ async function execute(interaction, user) {
   if (
     gameState.missionVotes[gameState.missionIndex].filter(
       (e) => e === targetMission,
-    ).length >= 7 ||
+    ).length >= 7 &&
     gameState.currentState === 'voteWait'
   ) {
     await clearTasks();
