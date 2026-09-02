@@ -27,6 +27,10 @@ const data = new SlashCommandBuilder()
           name: 'Signups',
           value: 'signups',
         },
+        {
+          name: 'Phase Change',
+          value: 'phase',
+        },
       ),
   );
 
@@ -57,6 +61,11 @@ async function execute(interaction, user) {
     await gameInfo.set('readyPlayers', []);
     await gameInfo.set('inPlay', false);
     await gameInfo.set('inReady', false);
+  } else if (voidType === 'phase') {
+    const gameState = await gameInfo.get('gameState');
+    gameState.currentState = 'voteWait';
+    await gameInfo.set('gameState', gameState);
+    await schedDB.clear();
   }
 
   await interaction.reply({
