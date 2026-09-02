@@ -31,6 +31,10 @@ const data = new SlashCommandBuilder()
           name: 'Phase Change',
           value: 'phase',
         },
+        {
+          name: 'Special',
+          value: 'special',
+        },
       ),
   );
 
