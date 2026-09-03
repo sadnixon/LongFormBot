@@ -33,6 +33,10 @@ async function execute(interaction, user) {
     ephemeral: true,
   });
   await sendGameState(interaction.client, 'current',true,'none',interaction);
+  const gameState = await gameInfo.get('gameState');
+  const timers = await schedDB.get('scheduled_tasks');
+  console.log(gameState);
+  console.log(timers);
 }
 
 module.exports = {
