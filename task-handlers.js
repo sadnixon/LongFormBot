@@ -13,6 +13,7 @@ const {
   scheduleInXHours,
   clearTasks,
 } = require('./scheduler');
+//const _ = require('lodash');
 
 const missionSizes = [4, 5, 6, 7, 6, 7, 7];
 
@@ -88,6 +89,10 @@ function initializeTaskHandlers(discordClient) {
     const playerChannels = await gameInfo.get('player_channels');
     const gameState = await gameInfo.get('gameState');
     const guild = await client.guilds.fetch(gameState.guildId);
+
+    if (gameState.currentState !== 'missionWait') {
+      return;
+    }
 
     gameState.phaseTimers = [];
 

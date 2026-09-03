@@ -28,6 +28,10 @@ const data = new SlashCommandBuilder()
           value: 'signups',
         },
         {
+          name: 'Timers',
+          value: 'timers',
+        },
+        {
           name: 'Phase Change',
           value: 'phase',
         },
@@ -74,6 +78,11 @@ async function execute(interaction, user) {
   } else if (voidType === 'special') {
     const gameState = await gameInfo.get('gameState');
     gameState.phaseTimers = [{taskId: "awhwhw",timeStamp: gameState.phaseEndStamp}];
+    await gameInfo.set('gameState', gameState);
+  } else if (voidType === 'timers') {
+    await schedDB.clear();
+    const gameState = await gameInfo.get('gameState');
+    gameState.phaseTimers = [];
     await gameInfo.set('gameState', gameState);
   }
 
