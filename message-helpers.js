@@ -457,8 +457,8 @@ async function missionCompletion(client) {
     const playerIndex = gameState.players.map((e) => e.id).indexOf(id);
     if (
       gameState.missionFails < 3 &&
-      id in gameState.witchCurses &&
-      gameState.witchCurses[id].triggered === false
+      id in gameState.witchCurses
+      //&& gameState.witchCurses[id].triggered === false
     ) {
       if (
         (gameState.witchCurses[id].role === 'lover' &&
@@ -469,13 +469,16 @@ async function missionCompletion(client) {
           gameState.players[playerIndex].role === 'Percival')
       ) {
         validOutcomes[id] = 'fail';
-        gameState.witchCurses[id].triggered = true;
-        gameState.witchResults.push({
-          id: id,
-          role: gameState.witchCurses[id].role,
-          success: true,
-          index: gameState.missionIndex,
-        });
+        gameState.missionSFs[gameState.missionIndex][id] = 'fail';
+        if (gameState.witchCurses[id].triggered === false) {
+          gameState.witchCurses[id].triggered = true;
+          gameState.witchResults.push({
+            id: id,
+            role: gameState.witchCurses[id].role,
+            success: true,
+            index: gameState.missionIndex,
+          });
+        }
         const playerChannel = await guild.channels.fetch(
           playerChannels[id].channelId,
         );
@@ -483,13 +486,15 @@ async function missionCompletion(client) {
           `<@${id}>, the Witch guessed your role correctly, which means you have been Witched into failing this mission.`,
         );
       } else {
-        gameState.witchCurses[id].triggered = true;
-        gameState.witchResults.push({
-          id: id,
-          role: gameState.witchCurses[id].role,
-          success: false,
-          index: gameState.missionIndex,
-        });
+        if (gameState.witchCurses[id].triggered === false) {
+          gameState.witchCurses[id].triggered = true;
+          gameState.witchResults.push({
+            id: id,
+            role: gameState.witchCurses[id].role,
+            success: false,
+            index: gameState.missionIndex,
+          });
+        }
       }
     }
   }
@@ -504,6 +509,7 @@ async function missionCompletion(client) {
     ) {
       gameState.witchPunished = true;
       validOutcomes[id] = 'success';
+      gameState.missionSFs[gameState.missionIndex][id] = 'success';
       await genChannel.send(
         standardEmbed(
           'There has been a second failed Witch guess!',
