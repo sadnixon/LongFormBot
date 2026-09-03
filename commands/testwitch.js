@@ -103,6 +103,7 @@ async function execute(interaction, user) {
     ['Assassin', 'Morgana', 'Mordred', 'Witch'].includes(
       gameState.players[targetPlayerIndex].role,
     ) ||
+    (gameState.witchResults.length > 0 && gameState.witchResults[0].success) ||
     Object.keys(gameState.witchCurses).length > 1 ||
     (Object.keys(gameState.witchCurses).length === 1 &&
       ((Object.values(gameState.witchCurses)[0].role === targetRole &&
