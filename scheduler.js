@@ -2,7 +2,7 @@
 
 const crypto = require('crypto');
 
-const CHECK_INTERVAL = 5 * 1000; // 10 seconds
+const CHECK_INTERVAL = 10 * 1000; // 10 seconds
 
 let schedulerInterval = null;
 
@@ -63,7 +63,7 @@ async function scheduleTask(type, data, executeAt) {
   const gameState = await gameInfo.get('gameState');
   gameState.phaseTimers.push({ taskId: taskId, timeStamp: executeAt });
   await gameInfo.set('gameState', gameState);
-
+  console.log(`Scheduling task ${taskId} (${type})`);
   return taskId;
 }
 
@@ -90,6 +90,7 @@ async function cancelTask(taskId) {
   }
 
   await schedDB.delete(key);
+  console.log(`Cancelling scheduled task ${taskId} (${task.type})`);
 
   const taskIds = (await schedDB.get('scheduled_tasks')) ?? [];
 

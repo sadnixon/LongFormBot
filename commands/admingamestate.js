@@ -32,11 +32,21 @@ async function execute(interaction, user) {
     content: "Here's the current game state!",
     ephemeral: true,
   });
-  await sendGameState(interaction.client, 'current',true,'none',interaction);
+  await sendGameState(interaction.client, 'current', true, 'none', interaction);
   const gameState = await gameInfo.get('gameState');
   const timers = await schedDB.get('scheduled_tasks');
   console.log(gameState);
   console.log(timers);
+  for (const taskId of timers) {
+    const task = await schedDB.get(`scheduled_task:${taskId}`);
+
+    if (!task) {
+      console.log(`${taskId} NOT FOUND`);
+      continue;
+    } else {
+      console.log(task);
+    }
+  }
 }
 
 module.exports = {
