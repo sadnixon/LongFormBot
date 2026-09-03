@@ -13,7 +13,7 @@ const {
   scheduleInXHours,
   clearTasks,
 } = require('./scheduler');
-//const _ = require('lodash');
+const _ = require('lodash');
 
 const missionSizes = [4, 5, 6, 7, 6, 7, 7];
 
