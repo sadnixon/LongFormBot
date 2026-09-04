@@ -19,9 +19,6 @@ const colorMap = {
   communist: '#B1342D',
 };
 
-const missionSizes = [4, 5, 6, 7, 6, 7, 7];
-const failsNeeded = [1, 1, 1, 2, 1, 2, 1];
-
 const standardEmbed = (header, message, team = 'neutral') => {
   return {
     embeds: [
@@ -200,6 +197,8 @@ async function startGame(interaction) {
 
   const startState = {
     guildId: interaction.guildId,
+    missionSizes = [4, 5, 6, 7, 6, 7, 7],
+    failsNeeded = [1, 1, 1, 2, 1, 2, 1],
     players: _.range(0, player_num).map((i) => ({
       id: shuffledPlayers[i],
       role: shuffledRoles[i],
@@ -316,7 +315,9 @@ async function sendGameState(
     const isFinished = gameState.passedMissions.map(
       (e, i) => i < gameState.missionResults.length,
     );
-    const isSuccess = gameState.missionResults.map((e) => e === 'succeed');
+    const isSuccess = gameState.missionResults.map(
+      (e) => e.result === 'succeed',
+    );
     return gameState.passedMissions
       .map((e, i) =>
         isFinished[i]
@@ -355,7 +356,7 @@ async function sendGameState(
   const missionSection = gameState.passedMissions
     .map(
       (e, i) =>
-        `**M${i + 1}:** ${gameState.missionResults[i] ? (gameState.missionResults[i] === 'fail' ? '🟥 ' : '🟦 ') : ''}<@${e.id}>'s (${e.team.map((e1) => `<@${e1}>`).join(' + ')})`,
+        `**M${i + 1}:** ${gameState.missionResults[i] ? (gameState.missionResults[i].result === 'fail' ? `🟥 (${gameState.missionResults[i].fails})` : `🟦 (${gameState.missionResults[i].fails})`) : ''}<@${e.id}>'s (${e.team.map((e1) => `<@${e1}>`).join(' + ')})`,
     )
     .join('\n');
 
@@ -404,10 +405,7 @@ async function sendVoteState(
       gameState.passedMissions[missionIndex].team,
     );
 
-    const failCount = Object.values(validOutcomes).filter(
-      (e) => e === 'fail',
-    ).length;
-    resultText = `\n\n**<@${gameState.passedMissions[missionIndex].id}> Result: ${gameState.missionResults[missionIndex].toUpperCase()} with ${failCount} fail(s)**`;
+    resultText = `\n\n**<@${gameState.passedMissions[missionIndex].id}> Result: ${gameState.missionResults[missionIndex].result.toUpperCase()} with ${gameState.missionResults[missionIndex].fails} fail(s)**`;
   }
 
   let failsuccText = '';
@@ -468,21 +466,47 @@ async function missionCompletion(client) {
   );
 
   //Witch shit
-  for (const id of Object.keys(validOutcomes)) {
-    const playerIndex = gameState.players.map((e) => e.id).indexOf(id);
-    if (
-      gameState.missionFails < 3 &&
-      id in gameState.witchCurses
-      //&& gameState.witchCurses[id].triggered === false
-    ) {
+  let playersToWitch = [];
+
+  if (
+    gameState.witchResults.filter((e) => e.success).length === 0 &&
+    gameState.missionFails < 3
+  ) {
+    for (const id of Object.keys(validOutcomes)) {
+      const playerIndex = gameState.players.map((e) => e.id).indexOf(id);
       if (
-        (gameState.witchCurses[id].role === 'lover' &&
-          ['Tristan', 'Isolde'].includes(
-            gameState.players[playerIndex].role,
-          )) ||
-        (gameState.witchCurses[id].role === 'percival' &&
-          gameState.players[playerIndex].role === 'Percival')
+        id in gameState.witchCurses
+        //&& gameState.witchCurses[id].triggered === false
       ) {
+        if (
+          (gameState.witchCurses[id].role === 'lover' &&
+            ['Tristan', 'Isolde'].includes(
+              gameState.players[playerIndex].role,
+            )) ||
+          (gameState.witchCurses[id].role === 'percival' &&
+            gameState.players[playerIndex].role === 'Percival')
+        ) {
+          playersToWitch.push(id);
+        } else {
+          if (gameState.witchCurses[id].triggered === false) {
+            gameState.witchCurses[id].triggered = true;
+            gameState.witchResults.push({
+              id: id,
+              role: gameState.witchCurses[id].role,
+              success: false,
+              index: gameState.missionIndex,
+            });
+          }
+        }
+      }
+    }
+  }
+
+  if (playersToWitch.length > 1) {
+    for (const id in playersToWitch) {
+      if (gameState.witchCurses[id].index > 0) {
+        delete gameState.witchCurses[id];
+      } else {
         validOutcomes[id] = 'fail';
         gameState.missionSFs[gameState.missionIndex][id] = 'fail';
         if (gameState.witchCurses[id].triggered === false) {
@@ -500,18 +524,26 @@ async function missionCompletion(client) {
         await playerChannel.send(
           `<@${id}>, the Witch guessed your role correctly, which means you have been Witched into failing this mission.`,
         );
-      } else {
-        if (gameState.witchCurses[id].triggered === false) {
-          gameState.witchCurses[id].triggered = true;
-          gameState.witchResults.push({
-            id: id,
-            role: gameState.witchCurses[id].role,
-            success: false,
-            index: gameState.missionIndex,
-          });
-        }
       }
     }
+  } else if (playersToWitch.length === 1) {
+    validOutcomes[playersToWitch[0]] = 'fail';
+    gameState.missionSFs[gameState.missionIndex][playersToWitch[0]] = 'fail';
+    if (gameState.witchCurses[playersToWitch[0]].triggered === false) {
+      gameState.witchCurses[playersToWitch[0]].triggered = true;
+      gameState.witchResults.push({
+        id: playersToWitch[0],
+        role: gameState.witchCurses[playersToWitch[0]].role,
+        success: true,
+        index: gameState.missionIndex,
+      });
+    }
+    const playerChannel = await guild.channels.fetch(
+      playerChannels[playersToWitch[0]].channelId,
+    );
+    await playerChannel.send(
+      `<@${playersToWitch[0]}>, the Witch guessed your role correctly, which means you have been Witched into failing this mission.`,
+    );
   }
 
   for (const id of Object.keys(validOutcomes)) {
@@ -537,13 +569,13 @@ async function missionCompletion(client) {
   const failCount = Object.values(validOutcomes).filter(
     (e) => e === 'fail',
   ).length;
-  if (failCount >= failsNeeded[gameState.missionIndex]) {
+  if (failCount >= gameState.failsNeeded[gameState.missionIndex]) {
     await announceChannel.send(
       `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe M${gameState.missionIndex + 1} chosen by <@${gameState.passedMissions[gameState.missionIndex].id}> has FAILED with ${failCount} fail(s)!`,
     );
     gameState.missionFails += 1;
 
-    gameState.missionResults.push('fail');
+    gameState.missionResults.push({ result: 'fail', fails: failCount });
     if (gameState.missionFails < 4) {
       gameState.missionIndex += 1;
       //Ref of the rain case
@@ -571,7 +603,7 @@ async function missionCompletion(client) {
     );
     gameState.missionSuccs += 1;
 
-    gameState.missionResults.push('succeed');
+    gameState.missionResults.push({ result: 'succeed', fails: failCount });
     if (gameState.missionSuccs < 4) {
       gameState.missionIndex += 1;
       //Going straight to next phase case

@@ -18,8 +18,6 @@ const data = new SlashCommandBuilder()
   .setName('unvote')
   .setDescription('Unpick your mission');
 
-const missionSizes = [4, 5, 6, 7, 6, 7, 7];
-
 async function execute(interaction, user) {
   if (!interaction.guildId) {
     return interaction.reply({

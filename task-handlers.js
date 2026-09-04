@@ -15,8 +15,6 @@ const {
 } = require('./scheduler');
 const _ = require('lodash');
 
-const missionSizes = [4, 5, 6, 7, 6, 7, 7];
-
 let client;
 
 function initializeTaskHandlers(discordClient) {
@@ -77,7 +75,7 @@ function initializeTaskHandlers(discordClient) {
       gameState.passedMissions[gameState.missionIndex] &&
       Object.keys(gameState.missionSFs[gameState.missionIndex]).filter((e) =>
         gameState.passedMissions[gameState.missionIndex].team.includes(e),
-      ).length >= missionSizes[gameState.missionIndex]
+      ).length >= gameState.missionSizes[gameState.missionIndex]
     ) {
       await missionCompletion(client);
     } else {
@@ -153,7 +151,7 @@ function initializeTaskHandlers(discordClient) {
       const playerIndex = gameState.players.map((e) => e.id).indexOf(player);
       const targetIds = shuffleArray(currentPlayers).slice(
         0,
-        missionSizes[gameState.missionIndex],
+        gameState.missionSizes[gameState.missionIndex],
       );
       gameState.missionPicks[gameState.missionIndex][player] = {
         id: player,
@@ -213,7 +211,7 @@ function initializeTaskHandlers(discordClient) {
         gameState.passedMissions[gameState.missionIndex] &&
         Object.keys(gameState.missionSFs[gameState.missionIndex]).filter((e) =>
           gameState.passedMissions[gameState.missionIndex].team.includes(e),
-        ).length >= missionSizes[gameState.missionIndex]
+        ).length >= gameState.missionSizes[gameState.missionIndex]
       ) {
         await missionCompletion(client);
       } else {

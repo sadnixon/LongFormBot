@@ -66,8 +66,6 @@ const data = new SlashCommandBuilder()
       .setRequired(false),
   );
 
-const missionSizes = [4, 5, 6, 7, 6, 7, 7];
-
 async function execute(interaction, user) {
   if (!interaction.guildId) {
     return interaction.reply({
@@ -99,11 +97,11 @@ async function execute(interaction, user) {
     .map((e) => e.id)
     .filter((e) => currentPlayers.includes(e));
   if (
-    targetIds.length !== missionSizes[gameState.missionIndex] ||
+    targetIds.length !== gameState.missionSizes[gameState.missionIndex] ||
     !isUnique(targetIds)
   ) {
     return interaction.reply({
-      content: `That was an incorrect amount of players! You have to submit ${missionSizes[gameState.missionIndex]} valid players!`,
+      content: `That was an incorrect amount of players! You have to submit ${gameState.missionSizes[gameState.missionIndex]} valid players!`,
       ephemeral: true,
     });
   }
@@ -171,7 +169,7 @@ async function execute(interaction, user) {
       gameState.passedMissions[gameState.missionIndex] &&
       Object.keys(gameState.missionSFs[gameState.missionIndex]).filter((e) =>
         gameState.passedMissions[gameState.missionIndex].team.includes(e),
-      ).length >= missionSizes[gameState.missionIndex]
+      ).length >= gameState.missionSizes[gameState.missionIndex]
     ) {
       await missionCompletion(interaction.client);
     } else {

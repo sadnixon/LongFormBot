@@ -87,6 +87,7 @@ async function execute(interaction, user) {
     id: targetPlayer.id,
     role: targetRole,
     triggered: false,
+    index: Object.keys(gameState.witchCurses).length,
   };
 
   await gameInfo.set('gameState', gameState);

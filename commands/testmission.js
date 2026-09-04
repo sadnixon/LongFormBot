@@ -61,8 +61,6 @@ const data = new SlashCommandBuilder()
       ),
   );
 
-const missionSizes = [4, 5, 6, 7, 6, 7, 7];
-
 async function execute(interaction, user) {
   if (!user.isAuthorized) {
     return interaction.reply({
@@ -119,7 +117,7 @@ async function execute(interaction, user) {
     gameState.passedMissions[gameState.missionIndex] &&
     Object.keys(gameState.missionSFs[gameState.missionIndex]).filter((e) =>
       gameState.passedMissions[gameState.missionIndex].team.includes(e),
-    ).length >= missionSizes[gameState.missionIndex]
+    ).length >= gameState.missionSizes[gameState.missionIndex]
   ) {
     await missionCompletion(interaction.client);
   }

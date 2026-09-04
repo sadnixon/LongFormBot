@@ -101,7 +101,7 @@ async function execute(interaction, user) {
         targetPlayer in gameState.witchCurses))
   ) {
     return interaction.reply({
-      content: `This is not a valid witch guess! You must choose a non-spy player in the current game (you cannot guess the same player twice, or the same role twice, or guess more than twice).`,
+      content: `This is not a valid witch guess! You must choose a non-spy player in the current game (you cannot guess the same player twice, or the same role twice, or guess more than twice, or guess after you already got one correct).`,
       ephemeral: true,
     });
   }
@@ -110,6 +110,7 @@ async function execute(interaction, user) {
     id: targetPlayer.id,
     role: targetRole,
     triggered: false,
+    index: Object.keys(gameState.witchCurses).length,
   };
 
   await gameInfo.set('gameState', gameState);

@@ -24,8 +24,6 @@ const data = new SlashCommandBuilder()
       .setRequired(true),
   );
 
-const missionSizes = [4, 5, 6, 7, 6, 7, 7];
-
 async function execute(interaction, user) {
   const userId = interaction.options.getUser(`user`).id;
 
