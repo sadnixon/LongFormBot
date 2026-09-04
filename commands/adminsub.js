@@ -68,7 +68,7 @@ async function execute(interaction, user) {
   }
 
   const gameOngoing = await gameInfo.get('inPlay');
-  const currentPlayers = await gameInfo.get('players');
+  let currentPlayers = await gameInfo.get('players');
 
   const outUser = interaction.options.getUser('out').id;
   const inUserNoId = interaction.options.getUser('in');
