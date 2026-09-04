@@ -107,7 +107,7 @@ async function execute(interaction, user) {
     }
   }
   for (let i = 0; i < gameState.missionPickers.length; i++) {
-    if (gameState.gameState.missionPickers[i].includes(outUser)) {
+    if (gameState.missionPickers[i].includes(outUser)) {
       const repIdx = gameState.missionPickers[i].indexOf(outUser);
       gameState.missionPickers[i] = gameState.missionPickers[i].toSpliced(
         repIdx,
@@ -134,7 +134,7 @@ async function execute(interaction, user) {
     }
   }
   if (outUser in gameState.witchCurses) {
-    gameState.gameState.witchCurses[inUser] = gameState.witchCurses[outUser];
+    gameState.witchCurses[inUser] = gameState.witchCurses[outUser];
     gameState.witchCurses[inUser].id = inUser;
     delete gameState.witchCurses[outUser];
   }
