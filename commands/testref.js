@@ -111,6 +111,9 @@ async function execute(interaction, user) {
   const genChannel = await interaction.guild.channels.fetch(
     gameChannels['general'].channelId,
   );
+  const announceChannel = await interaction.guild.channels.fetch(
+    gameChannels['announcements'].channelId,
+  );
 
   const targetPlayerIndex = gameState.players
     .map((e) => e.id)
@@ -123,7 +126,7 @@ async function execute(interaction, user) {
       `<@${targetPlayer}> is on the ${targetTeam} team!`,
     ),
   );
-  await genChannel.send(
+  await announceChannel.send(
     standardEmbed(
       'The Ref of the Rain has been used!',
       `<@${userId}> used the card on <@${targetPlayer}> and learned their team.`,

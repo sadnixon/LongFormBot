@@ -88,14 +88,26 @@ async function startGame(interaction) {
     gameChannels['heaven'].channelId,
   );
 
-  for (const channel of [
-    genChannel,
-    picksChannel,
-    loversChannel,
-    spiesChannel,
-    heavenChannel,
-  ]) {
+  for (const channel of [genChannel, picksChannel]) {
     await channel.permissionOverwrites.set([]);
+  }
+
+  for (const channel of [loversChannel, spiesChannel, heavenChannel]) {
+    await channel.permissionOverwrites.set([
+      {
+        id: interaction.guild.roles.everyone.id,
+        deny: [PermissionFlagsBits.ViewChannel],
+      },
+      {
+        id: interaction.guild.members.me.id,
+        allow: [
+          PermissionFlagsBits.ViewChannel,
+          PermissionFlagsBits.SendMessages,
+          PermissionFlagsBits.ReadMessageHistory,
+          PermissionFlagsBits.ManageChannels,
+        ],
+      },
+    ]);
   }
 
   for (let i = 0; i < player_num; i++) {
@@ -446,6 +458,9 @@ async function missionCompletion(client) {
   const genChannel = await guild.channels.fetch(
     gameChannels['general'].channelId,
   );
+  const announceChannel = await guild.channels.fetch(
+    gameChannels['announcements'].channelId,
+  );
 
   const validOutcomes = _.pick(
     gameState.missionSFs[gameState.missionIndex],
@@ -510,7 +525,7 @@ async function missionCompletion(client) {
       gameState.witchPunished = true;
       validOutcomes[id] = 'success';
       gameState.missionSFs[gameState.missionIndex][id] = 'success';
-      await genChannel.send(
+      await announceChannel.send(
         standardEmbed(
           'There has been a second failed Witch guess!',
           `A fail on this mission has been turned into a success as punishment.`,
@@ -523,8 +538,8 @@ async function missionCompletion(client) {
     (e) => e === 'fail',
   ).length;
   if (failCount >= failsNeeded[gameState.missionIndex]) {
-    await genChannel.send(
-      `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe mission chosen by <@${gameState.passedMissions[gameState.missionIndex].id}> has FAILED with ${failCount} fail(s)!`,
+    await announceChannel.send(
+      `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe M${gameState.missionIndex + 1} chosen by <@${gameState.passedMissions[gameState.missionIndex].id}> has FAILED with ${failCount} fail(s)!`,
     );
     gameState.missionFails += 1;
 
@@ -551,8 +566,8 @@ async function missionCompletion(client) {
       await endGame(client);
     }
   } else {
-    await genChannel.send(
-      `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe mission chosen by <@${gameState.passedMissions[gameState.missionIndex].id}> has SUCCEEDED!. Number of fails: ${failCount}.`,
+    await announceChannel.send(
+      `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe M${gameState.missionIndex + 1} chosen by <@${gameState.passedMissions[gameState.missionIndex].id}> has SUCCEEDED!. Number of fails: ${failCount}.`,
     );
     gameState.missionSuccs += 1;
 
@@ -611,6 +626,9 @@ async function endGame(client) {
   const heavenChannel = await guild.channels.fetch(
     gameChannels['heaven'].channelId,
   );
+  const announceChannel = await interaction.guild.channels.fetch(
+    gameChannels['announcements'].channelId,
+  );
 
   for (const id in currentPlayers) {
     await genChannel.permissionOverwrites.edit(id, {
@@ -643,7 +661,7 @@ async function endGame(client) {
       gameState.players[shot1Index].role === 'Merlin') ||
     (gameState.assassinShot.length === 0 && gameState.missionFails > 3)
   ) {
-    await genChannel.send(
+    await announceChannel.send(
       `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\n# THE SPIES WIN!`,
     );
     winningTeam = 'Spy';
@@ -654,7 +672,7 @@ async function endGame(client) {
     (gameState.assassinShot.length === 1 &&
       gameState.players[shot1Index].role !== 'Merlin')
   ) {
-    await genChannel.send(
+    await announceChannel.send(
       `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\n# THE RESISTANCE WIN!`,
     );
     winningTeam = 'Resistance';

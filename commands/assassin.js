@@ -92,19 +92,19 @@ async function execute(interaction, user) {
   });
 
   const gameChannels = await gameInfo.get('game_channels');
-  const genChannel = await interaction.guild.channels.fetch(
-    gameChannels['general'].channelId,
+  const announceChannel = await interaction.guild.channels.fetch(
+    gameChannels['announcements'].channelId,
   );
 
   if (gameState.assassinShot.length === 2) {
-    await genChannel.send(
+    await announceChannel.send(
       standardEmbed(
         'An assassination was made!',
         `<@${interaction.user.id}> assassinated <@${gameState.assassinShot[0]}> and <@${gameState.assassinShot[1]}> as the Lovers!\nTheir roles were ${gameState.players[targetPlayerIndex].role} and ${gameState.players[targetPlayer2Index].role}.`,
       ),
     );
   } else {
-    await genChannel.send(
+    await announceChannel.send(
       standardEmbed(
         'An assassination was made!',
         `<@${interaction.user.id}> assassinated <@${gameState.assassinShot[0]}> as Merlin!\nTheir role was ${gameState.players[targetPlayerIndex].role}.`,

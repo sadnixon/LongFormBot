@@ -232,6 +232,9 @@ function initializeTaskHandlers(discordClient) {
     const genChannel = await guild.channels.fetch(
       gameChannels['general'].channelId,
     );
+    const announceChannel = await interaction.guild.channels.fetch(
+      gameChannels['announcements'].channelId,
+    );
 
     gameState.phaseTimers = [];
 
@@ -269,7 +272,7 @@ function initializeTaskHandlers(discordClient) {
         `<@${targetPlayer}> is on the ${targetTeam} team!`,
       ),
     );
-    await genChannel.send(
+    await announceChannel.send(
       standardEmbed(
         'The Ref of the Rain has been used!',
         `<@${gameState.refChain.at(-2)}> (randomly) used the card on <@${targetPlayer}> and learned their team.`,

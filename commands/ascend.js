@@ -37,8 +37,8 @@ async function execute(interaction, user) {
   }
 
   await interaction.reply({
-    content: `You're ascending to Heaven!"`,
-    ephemeral: true,
+    content: `<@${interaction.user.id}> is ascending to Heaven!"`,
+    ephemeral: false,
   });
 
   const gameChannels = await gameInfo.get('game_channels');
@@ -51,6 +51,12 @@ async function execute(interaction, user) {
   const heavenChannel = await interaction.guild.channels.fetch(
     gameChannels['heaven'].channelId,
   );
+  const loversChannel = await interaction.guild.channels.fetch(
+    gameChannels['lovers'].channelId,
+  );
+  const spiesChannel = await interaction.guild.channels.fetch(
+    gameChannels['spies'].channelId,
+  );
 
   await genChannel.permissionOverwrites.edit(interaction.user.id, {
     [PermissionFlagsBits.SendMessages]: false,
@@ -61,6 +67,16 @@ async function execute(interaction, user) {
   await heavenChannel.permissionOverwrites.edit(interaction.user.id, {
     [PermissionFlagsBits.ViewChannel]: true,
     [PermissionFlagsBits.SendMessages]: true,
+    [PermissionFlagsBits.ReadMessageHistory]: true,
+  });
+  await loversChannel.permissionOverwrites.edit(interaction.user.id, {
+    [PermissionFlagsBits.ViewChannel]: true,
+    [PermissionFlagsBits.SendMessages]: false,
+    [PermissionFlagsBits.ReadMessageHistory]: true,
+  });
+  await spiesChannel.permissionOverwrites.edit(interaction.user.id, {
+    [PermissionFlagsBits.ViewChannel]: true,
+    [PermissionFlagsBits.SendMessages]: false,
     [PermissionFlagsBits.ReadMessageHistory]: true,
   });
 }

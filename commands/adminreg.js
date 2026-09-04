@@ -22,6 +22,10 @@ const data = new SlashCommandBuilder()
           value: 'picks',
         },
         {
+          name: 'Announcements',
+          value: 'announcements',
+        },
+        {
           name: 'Lovers',
           value: 'lovers',
         },
