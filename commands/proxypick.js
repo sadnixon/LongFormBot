@@ -142,6 +142,9 @@ async function execute(interaction, user) {
   const pickChannel = await interaction.guild.channels.fetch(
     gameChannels['picks'].channelId,
   );
+  const genChannel = await interaction.guild.channels.fetch(
+    gameChannels['general'].channelId,
+  );
 
   gameState.missionPicks[gameState.missionIndex][userId] = {
     id: userId,
