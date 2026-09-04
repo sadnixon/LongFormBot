@@ -77,8 +77,8 @@ async function execute(interaction, user) {
   await gameInfo.set('gameState', gameState);
 
   await interaction.reply({
-    content: `You made a mission outcome choice!`,
-    ephemeral: true,
+    content: `You made a mission outcome choice to ${targetOutcome.toUpperCase()}!`,
+    ephemeral: false,
   });
 
   if (

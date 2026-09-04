@@ -88,7 +88,7 @@ async function execute(interaction, user) {
   await playerChannel.send(
     standardEmbed(
       'The Ref of the Rain reveals to you the following information:',
-      `<@${targetPlayer}> is on the ${targetTeam} team!`,
+      `<@${targetPlayer}> is on the ${targetTeam} team!\nYou can claim what you saw using /claim.`,
     ),
   );
   await announceChannel.send(
