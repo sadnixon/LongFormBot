@@ -69,23 +69,46 @@ async function startGame(interaction) {
     ['Merlin', 'Morgana'].includes(shuffledRoles[i]),
   );
 
-  const genChannel = await interaction.guild.channels.fetch(
-    gameChannels['general'].channelId,
-  );
-  const picksChannel = await interaction.guild.channels.fetch(
-    gameChannels['picks'].channelId,
-  );
-  const loversChannel = await interaction.guild.channels.fetch(
-    gameChannels['lovers'].channelId,
-  );
-  const spiesChannel = await interaction.guild.channels.fetch(
-    gameChannels['spies'].channelId,
-  );
-  const heavenChannel = await interaction.guild.channels.fetch(
-    gameChannels['heaven'].channelId,
-  );
+  let genChannel;
+  let picksChannel;
+  let loversChannel;
+  let spiesChannel;
+  let heavenChannel;
+  let announceChannel;
+  let nongameChannel;
 
-  for (const channel of [genChannel, picksChannel]) {
+  try {
+    genChannel = await interaction.guild.channels.fetch(
+      gameChannels['general'].channelId,
+    );
+    picksChannel = await interaction.guild.channels.fetch(
+      gameChannels['picks'].channelId,
+    );
+    loversChannel = await interaction.guild.channels.fetch(
+      gameChannels['lovers'].channelId,
+    );
+    spiesChannel = await interaction.guild.channels.fetch(
+      gameChannels['spies'].channelId,
+    );
+    heavenChannel = await interaction.guild.channels.fetch(
+      gameChannels['heaven'].channelId,
+    );
+    announceChannel = await interaction.guild.channels.fetch(
+      gameChannels['announcements'].channelId,
+    );
+    nongameChannel = await interaction.guild.channels.fetch(
+      gameChannels['nongame'].channelId,
+    );
+  } catch (error) {
+    console.error('Failed to get all channels:', error);
+    process.exitCode = 1;
+    return interaction.reply({
+      content: 'Game cannot start, some of the required game channels are missing!',
+      ephemeral: false,
+    });
+  }
+
+  for (const channel of [genChannel, picksChannel, nongameChannel]) {
     await channel.permissionOverwrites.set([]);
   }
 
@@ -123,6 +146,11 @@ async function startGame(interaction) {
         [PermissionFlagsBits.SendMessages]: true,
         [PermissionFlagsBits.ReadMessageHistory]: true,
       });
+      await nongameChannel.permissionOverwrites.edit(shuffledPlayers[i], {
+        [PermissionFlagsBits.ViewChannel]: true,
+        [PermissionFlagsBits.SendMessages]: true,
+        [PermissionFlagsBits.ReadMessageHistory]: true,
+      });
     }
     const playerChannel = await interaction.guild.channels.fetch(
       playerChannels[shuffledPlayers[i]].channelId,
@@ -147,8 +175,8 @@ async function startGame(interaction) {
 
       await playerChannel.send(
         standardEmbed(
-          'You see the following Spies:',
-          knownSpies.map((e) => `<@${e}>`).join(', '),
+          'Your co-Spies, the Minions of Mordred, stand assembled:',
+          `${knownSpies.map((e) => `<@${e}>`).join(', ')}\nYour last ally, Oberon the King of Fairies, didn't make it to the meeting.`,
         ),
       );
     } else if (['Tristan', 'Isolde'].includes(shuffledRoles[i])) {
@@ -181,14 +209,14 @@ async function startGame(interaction) {
     } else if (shuffledRoles[i] === 'Merlin') {
       await playerChannel.send(
         standardEmbed(
-          'You see the following Spies:',
-          visibleSpies.map((e) => `<@${e}>`).join(', '),
+          'You ponder your orb and see the following Spies, the Minions of Mordred:',
+          `${visibleSpies.map((e) => `<@${e}>`).join(', ')}\nHowever, Mordred himself is invisible to you.`,
         ),
       );
     } else if (shuffledRoles[i] === 'Percival') {
       await playerChannel.send(
         standardEmbed(
-          'You see the following Merlin options:',
+          'The evil enchantress Morgana cast a spell on herself and the honorable Merlin; you do not know which is which:',
           merlinOptions.map((e) => `<@${e}>`).join(', '),
         ),
       );
@@ -197,8 +225,8 @@ async function startGame(interaction) {
 
   const startState = {
     guildId: interaction.guildId,
-    missionSizes = [4, 5, 6, 7, 6, 7, 7],
-    failsNeeded = [1, 1, 1, 2, 1, 2, 1],
+    missionSizes: [4, 5, 6, 7, 6, 7, 7],
+    failsNeeded: [1, 1, 1, 2, 1, 2, 1],
     players: _.range(0, player_num).map((i) => ({
       id: shuffledPlayers[i],
       role: shuffledRoles[i],

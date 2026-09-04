@@ -18,6 +18,10 @@ const data = new SlashCommandBuilder()
           value: 'general',
         },
         {
+          name: 'Non-Game',
+          value: 'nongame',
+        },
+        {
           name: 'Picks/Paragraphs',
           value: 'picks',
         },
