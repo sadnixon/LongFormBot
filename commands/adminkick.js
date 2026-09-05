@@ -34,7 +34,7 @@ async function execute(interaction, user) {
     return;
   }
 
-  const currentPlayers = gameInfo.get('players');
+  const currentPlayers = await gameInfo.get('players');
   const targetUser = interaction.options.getUser('user');
 
   if (currentPlayers.includes(targetUser.id)) {
