@@ -51,7 +51,7 @@ async function execute(interaction, user) {
     }
     await gameInfo.set('kisses', kisses);
     return interaction.reply({
-      content: `Wow, <@${interaction.user.id}> has given <@${targetKissee}> a kiss! This is kiss #${kisses[interaction.user.id][targetKissee]} from this user, bringing ${[targetKissee]} up to ${kisses[targetKissee]} total.`,
+      content: `Wow, <@${interaction.user.id}> has given <@${targetKissee}> a kiss! This is kiss #${kisses[interaction.user.id][targetKissee]} from this user, bringing <@${[targetKissee]}> up to ${kisses[targetKissee]} total.`,
       ephemeral: false,
     });
   }
