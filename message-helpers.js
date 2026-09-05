@@ -695,6 +695,9 @@ async function endGame(client) {
   console.log(currentPlayers);
   for (const id of currentPlayers) {
     console.log(id);
+    const member = await guild.members.fetch(id).catch(() => null);
+    console.log(id, member ? 'found' : 'NOT IN GUILD');
+    if (!member) continue;
     await genChannel.permissionOverwrites.edit(id, {
       [PermissionFlagsBits.SendMessages]: false,
     });
