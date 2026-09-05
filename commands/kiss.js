@@ -43,6 +43,7 @@ async function execute(interaction, user) {
 
   if (
     kisses[interaction.user.id][targetKissee] &&
+    kisses[targetKissee] &&
     kisses[targetKissee][interaction.user.id]
   ) {
     if (
