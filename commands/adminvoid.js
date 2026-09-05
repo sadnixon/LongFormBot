@@ -74,18 +74,7 @@ async function execute(interaction, user) {
     await gameInfo.set('inPlay', false);
   } else if (voidType === 'special') {
     const gameState = await gameInfo.get('gameState');
-    gameState.refClaims = {};
-    gameState.missionResults = [
-      { result: 'succeed', fails: 0 },
-      { result: 'fail', fails: 1 },
-      { result: 'fail', fails: 3 },
-      { result: 'succeed', fails: 0 },
-      { result: 'fail', fails: 1 },
-      { result: 'succeed', fails: 0 },
-      { result: 'succeed', fails: 0 },
-    ];
-    gameState.currentState = 'assassinWait';
-    gameState.assassinShot = [];
+    gameState.missionPickers[0].push(gameState.players[3].id);
     await gameInfo.set('gameState', gameState);
   } else if (voidType === 'timers') {
     await schedDB.clear();

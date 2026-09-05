@@ -249,7 +249,8 @@ function initializeTaskHandlers(discordClient) {
         .map((e) => e.id)
         .indexOf(gameState.missionPickers[gameState.missionIndex - 1].at(-1)) +
       1;
-    for (let i = 0; i < 3 + gameState.missionFails; i++) {
+    const basePickCount = gameState.players.length > 14 ? 4 : 3;
+    for (let i = 0; i < basePickCount + gameState.missionFails; i++) {
       gameState.missionPickers[gameState.missionIndex].push(
         gameState.players[(nextUpIndex + i) % gameState.players.length].id,
       );
