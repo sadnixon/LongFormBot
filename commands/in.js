@@ -62,7 +62,7 @@ async function execute(interaction, user) {
   const gameOngoing = await gameInfo.get('inPlay');
   const gameReadying = await gameInfo.get('inReady');
   const currentPlayers = (await gameInfo.get('players')) ?? [];
-  if (gameOngoing || gameReadying || currentPlayers.length >= gameState.players.length) {
+  if (gameOngoing || gameReadying || currentPlayers.length >= 15) {
     await interaction.reply({
       content: `The game is ongoing/full, nobody can join!`,
       ephemeral: true,
