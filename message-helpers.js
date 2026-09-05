@@ -147,7 +147,7 @@ async function startGame(interaction) {
         .includes(shuffledPlayers[i])
     ) {
       console.log(shuffledPlayers[i]);
-      const member = await guild.members
+      const member = await interaction.guild.members
         .fetch(shuffledPlayers[i])
         .catch(() => null);
       console.log(shuffledPlayers[i], member ? 'found' : 'NOT IN GUILD');
@@ -185,7 +185,7 @@ async function startGame(interaction) {
           .includes(shuffledPlayers[i])
       ) {
         console.log(shuffledPlayers[i]);
-        const member = await guild.members
+        const member = await interaction.guild.members
           .fetch(shuffledPlayers[i])
           .catch(() => null);
         console.log(shuffledPlayers[i], member ? 'found' : 'NOT IN GUILD');
