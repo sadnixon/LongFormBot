@@ -55,7 +55,7 @@ async function execute(interaction, user) {
     !currentPlayers.includes(userId) ||
     !(
       ['Mordred', 'Witch', 'Morgana'].includes(
-        gameState.players[puppeteerIndex].role,
+        gameState.players[puppeteerIndex]?.role,
       ) || user.isAuthorized
     )
   ) {

@@ -77,7 +77,18 @@ async function execute(interaction, user) {
     await schedDB.clear();
   } else if (voidType === 'special') {
     const gameState = await gameInfo.get('gameState');
-    gameState.phaseTimers = [{taskId: "awhwhw",timeStamp: gameState.phaseEndStamp}];
+    gameState.refClaims = {};
+    gameState.missionResults = [
+      { result: 'succeed', fails: 0 },
+      { result: 'fail', fails: 1 },
+      { result: 'fail', fails: 3 },
+      { result: 'succeed', fails: 0 },
+      { result: 'fail', fails: 1 },
+      { result: 'succeed', fails: 0 },
+      { result: 'succeed', fails: 0 }
+    ];
+    gameState.currentState === 'assassinWait';
+    gameState.assassinShot = [];
     await gameInfo.set('gameState', gameState);
   } else if (voidType === 'timers') {
     await schedDB.clear();
