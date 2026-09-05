@@ -58,7 +58,7 @@ async function execute(interaction, user) {
       .indexOf(gameState.missionPickers[gameState.missionIndex - 1].at(-1)) + 1;
   for (let i = 0; i < 3 + gameState.missionFails; i++) {
     gameState.missionPickers[gameState.missionIndex].push(
-      gameState.players[(nextUpIndex + i) % 13].id,
+      gameState.players[(nextUpIndex + i) % gameState.players.length].id,
     );
   }
 

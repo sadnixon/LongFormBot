@@ -67,7 +67,7 @@ async function execute(interaction, user) {
       content: `You have now readied up!`,
       ephemeral: false,
     });
-    if (readyPlayers.length === 13) {
+    if (readyPlayers.length === 15) {
       await startGame(interaction);
     }
   } else {

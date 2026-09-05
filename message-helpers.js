@@ -34,7 +34,8 @@ async function startGame(interaction) {
   await gameInfo.set('inPlay', true);
   await gameInfo.set('inReady', false);
   await gameInfo.set('readyPlayers', []);
-  const player_num = 13;
+  const players = await gameInfo.get('players');
+  const player_num = players.length;
   const roles = [
     'Merlin',
     'Percival',
@@ -51,9 +52,15 @@ async function startGame(interaction) {
     'Witch',
   ];
 
+  if (player_num > 13) {
+    roles.push('Resistance');
+  }
+  if (player_num > 14) {
+    roles.push('Guinevere');
+  }
+
   const gameChannels = await gameInfo.get('game_channels');
   const playerChannels = await gameInfo.get('player_channels');
-  const players = await gameInfo.get('players');
 
   const shuffledRoles = shuffleArray(roles);
   const shuffledPlayers = shuffleArray(players);
@@ -63,7 +70,9 @@ async function startGame(interaction) {
     ['Morgana', 'Assassin', 'Oberon', 'Witch'].includes(shuffledRoles[i]),
   );
   const knownSpies = shuffledPlayers.filter((e, i) =>
-    ['Morgana', 'Assassin', 'Mordred', 'Witch'].includes(shuffledRoles[i]),
+    ['Morgana', 'Assassin', 'Mordred', 'Witch', 'Guinevere'].includes(
+      shuffledRoles[i],
+    ),
   );
   const merlinOptions = shuffledPlayers.filter((e, i) =>
     ['Merlin', 'Morgana'].includes(shuffledRoles[i]),
@@ -160,7 +169,9 @@ async function startGame(interaction) {
       `**<@${shuffledPlayers[i]}>, you are ${shuffledRoles[i]}!**`,
     );
     if (
-      ['Morgana', 'Assassin', 'Mordred', 'Witch'].includes(shuffledRoles[i])
+      ['Morgana', 'Assassin', 'Mordred', 'Witch', 'Guinevere'].includes(
+        shuffledRoles[i],
+      )
     ) {
       if (
         !_.range(0, 13)
@@ -226,7 +237,10 @@ async function startGame(interaction) {
 
   const startState = {
     guildId: interaction.guildId,
-    missionSizes: [4, 5, 6, 7, 6, 7, 7],
+    missionSizes:
+      shuffledPlayers.length === 13
+        ? [4, 5, 6, 7, 6, 7, 7]
+        : [4, 5, 6, 7, 7, 8, 8],
     failsNeeded: [1, 1, 1, 2, 1, 2, 1],
     players: _.range(0, player_num).map((i) => ({
       id: shuffledPlayers[i],
@@ -646,7 +660,7 @@ async function missionCompletion(client) {
           ) + 1;
       for (let i = 0; i < 3 + gameState.missionFails; i++) {
         gameState.missionPickers[gameState.missionIndex].push(
-          gameState.players[(nextUpIndex + i) % 13].id,
+          gameState.players[(nextUpIndex + i) % gameState.players.length].id,
         );
       }
       await gameInfo.set('gameState', gameState);

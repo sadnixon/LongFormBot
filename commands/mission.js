@@ -62,7 +62,8 @@ async function execute(interaction, user) {
     .indexOf(interaction.user.id);
   const targetOutcome = interaction.options.getString(`outcome`);
   if (
-    gameState.players[playerIndex].team === 'Resistance' &&
+    (gameState.players[playerIndex].team === 'Resistance' ||
+      gameState.players[playerIndex].role === 'Guinevere') &&
     targetOutcome === 'fail'
   ) {
     return interaction.reply({

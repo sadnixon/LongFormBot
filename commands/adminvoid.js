@@ -32,8 +32,8 @@ const data = new SlashCommandBuilder()
           value: 'timers',
         },
         {
-          name: 'Phase Change',
-          value: 'phase',
+          name: 'Ready',
+          value: 'ready',
         },
         {
           name: 'Special',
@@ -69,12 +69,9 @@ async function execute(interaction, user) {
     await gameInfo.set('readyPlayers', []);
     await gameInfo.set('inPlay', false);
     await gameInfo.set('inReady', false);
-  } else if (voidType === 'phase') {
-    const gameState = await gameInfo.get('gameState');
-    gameState.currentState = 'voteWait';
-    gameState.passedMissions = [];
-    await gameInfo.set('gameState', gameState);
-    await schedDB.clear();
+  } else if (voidType === 'ready') {
+    await gameInfo.set('inReady', false);
+    await gameInfo.set('inPlay', false);
   } else if (voidType === 'special') {
     const gameState = await gameInfo.get('gameState');
     gameState.refClaims = {};
@@ -85,7 +82,7 @@ async function execute(interaction, user) {
       { result: 'succeed', fails: 0 },
       { result: 'fail', fails: 1 },
       { result: 'succeed', fails: 0 },
-      { result: 'succeed', fails: 0 }
+      { result: 'succeed', fails: 0 },
     ];
     gameState.currentState = 'assassinWait';
     gameState.assassinShot = [];

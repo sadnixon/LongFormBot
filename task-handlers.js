@@ -191,7 +191,9 @@ function initializeTaskHandlers(discordClient) {
       }
     }
 
-    if (mostVotes >= 7) {
+    const voteMaj = gameState.players.length === 13 ? 7 : 8;
+
+    if (mostVotes >= voteMaj) {
       await clearTasks();
       const gameState = await gameInfo.get('gameState');
       gameState.currentState = 'missionWait';
@@ -249,7 +251,7 @@ function initializeTaskHandlers(discordClient) {
       1;
     for (let i = 0; i < 3 + gameState.missionFails; i++) {
       gameState.missionPickers[gameState.missionIndex].push(
-        gameState.players[(nextUpIndex + i) % 13].id,
+        gameState.players[(nextUpIndex + i) % gameState.players.length].id,
       );
     }
 

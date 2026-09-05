@@ -144,10 +144,12 @@ async function execute(interaction, user) {
     }
   }
 
+  const voteMaj = gameState.players.length === 13 ? 7 : 8;
+
   if (
     Object.keys(gameState.missionPicks[gameState.missionIndex]).length ===
       gameState.missionPickers[gameState.missionIndex].length &&
-    mostVotes >= 7
+    mostVotes >= voteMaj
   ) {
     await clearTasks();
     const gameState = await gameInfo.get('gameState');

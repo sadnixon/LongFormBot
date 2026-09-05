@@ -109,10 +109,12 @@ async function execute(interaction, user) {
   });
   await sendVoteState(interaction.client);
 
+  const voteMaj = gameState.players.length === 13 ? 7 : 8;
+
   if (
     gameState.missionVotes[gameState.missionIndex].filter(
       (e) => e === targetMission,
-    ).length >= 7 &&
+    ).length >= voteMaj &&
     //Object.keys(gameState.missionPicks[gameState.missionIndex]).length ===
     //  gameState.missionPickers[gameState.missionIndex].length
       targetMission in gameState.missionPicks[gameState.missionIndex]
