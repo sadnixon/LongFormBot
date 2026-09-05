@@ -41,6 +41,21 @@ async function execute(interaction, user) {
     kisses[interaction.user.id][targetKissee] = 1;
   }
 
+  await gameInfo.set('kisses', kisses);
+
+  if (targetKissee === interaction.guild.members.me.id) {
+    if (targetKissee in kisses) {
+      kisses[targetKissee] += 1;
+    } else {
+      kisses[targetKissee] = 1;
+    }
+    await gameInfo.set('kisses', kisses);
+    return interaction.reply({
+      content: `Wow, <@${interaction.user.id}> has given <@${targetKissee}> a kiss! This is kiss #${kisses[interaction.user.id][targetKissee]} from this user, bringing ${[targetKissee]} up to ${kisses[targetKissee]} total.`,
+      ephemeral: false,
+    });
+  }
+
   if (
     kisses[interaction.user.id][targetKissee] &&
     kisses[targetKissee] &&
