@@ -162,35 +162,23 @@ async function execute(interaction, user) {
     ephemeral: true,
   });
 
-  let mostVotes = 0;
-  let mostVotesMission;
-  for (const mission of gameState.missionPickers[gameState.missionIndex]) {
-    const voteCount = gameState.missionVotes[gameState.missionIndex].filter(
-      (e) => e === mission,
-    ).length;
-    if (voteCount > mostVotes) {
-      mostVotes = voteCount;
-      mostVotesMission = mission;
-    }
-  }
-
   const voteMaj = gameState.players.length === 13 ? 7 : 8;
 
   if (
-    Object.keys(gameState.missionPicks[gameState.missionIndex]).length ===
-      gameState.missionPickers[gameState.missionIndex].length &&
-    mostVotes >= voteMaj
+    gameState.missionVotes[gameState.missionIndex].filter(
+      (e) => e === userId,
+    ).length >= voteMaj
   ) {
     await clearTasks();
     const gameState = await gameInfo.get('gameState');
     gameState.currentState = 'missionWait';
     gameState.passedMissions.push(
-      gameState.missionPicks[gameState.missionIndex][mostVotesMission],
+      gameState.missionPicks[gameState.missionIndex][userId],
     );
     await gameInfo.set('gameState', gameState);
     await sendVoteState(interaction.client);
     await pickChannel.send(
-      `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe mission chosen by <@${mostVotesMission}> has passed!`,
+      `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe mission chosen by <@${userId}> has passed!`,
     );
     await sendGameState(interaction.client);
     await genChannel.send(
