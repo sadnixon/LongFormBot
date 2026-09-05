@@ -692,7 +692,7 @@ async function endGame(client) {
     gameChannels['announcements'].channelId,
   );
 
-  for (const id in currentPlayers) {
+  for (const id of currentPlayers) {
     await genChannel.permissionOverwrites.edit(id, {
       [PermissionFlagsBits.SendMessages]: false,
     });
