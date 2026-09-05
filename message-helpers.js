@@ -146,6 +146,12 @@ async function startGame(interaction) {
         .map((e) => `${e * 100}`)
         .includes(shuffledPlayers[i])
     ) {
+      console.log(shuffledPlayers[i]);
+      const member = await guild.members
+        .fetch(shuffledPlayers[i])
+        .catch(() => null);
+      console.log(shuffledPlayers[i], member ? 'found' : 'NOT IN GUILD');
+
       await genChannel.permissionOverwrites.edit(shuffledPlayers[i], {
         [PermissionFlagsBits.ViewChannel]: true,
         [PermissionFlagsBits.SendMessages]: true,
@@ -178,6 +184,11 @@ async function startGame(interaction) {
           .map((e) => `${e * 100}`)
           .includes(shuffledPlayers[i])
       ) {
+        console.log(shuffledPlayers[i]);
+        const member = await guild.members
+          .fetch(shuffledPlayers[i])
+          .catch(() => null);
+        console.log(shuffledPlayers[i], member ? 'found' : 'NOT IN GUILD');
         await spiesChannel.permissionOverwrites.edit(shuffledPlayers[i], {
           [PermissionFlagsBits.ViewChannel]: true,
           [PermissionFlagsBits.SendMessages]: true,
