@@ -87,7 +87,7 @@ async function execute(interaction, user) {
       { result: 'succeed', fails: 0 },
       { result: 'succeed', fails: 0 }
     ];
-    gameState.currentState === 'assassinWait';
+    gameState.currentState = 'assassinWait';
     gameState.assassinShot = [];
     await gameInfo.set('gameState', gameState);
   } else if (voidType === 'timers') {
