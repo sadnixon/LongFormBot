@@ -15,17 +15,17 @@ const data = new SlashCommandBuilder()
     option
       .setName('claim')
       .setDescription('The team that you are claiming to have seen')
-      .setRequired(true),
-  )
-  .addChoices(
-    {
-      name: 'Resistance',
-      value: 'resistance',
-    },
-    {
-      name: 'Spy',
-      value: 'spy',
-    },
+      .setRequired(true)
+      .addChoices(
+        {
+          name: 'Resistance',
+          value: 'resistance',
+        },
+        {
+          name: 'Spy',
+          value: 'spy',
+        },
+      ),
   );
 
 async function execute(interaction, user) {
@@ -42,7 +42,8 @@ async function execute(interaction, user) {
     !gameOngoing ||
     !currentPlayers.includes(interaction.user.id) ||
     !gameState.refChain.slice(0, -1).includes(interaction.user.id) ||
-    gameState.refChain[refChain.indexOf(interaction.user.id) + 1] in gameState.refClaims
+    gameState.refChain[refChain.indexOf(interaction.user.id) + 1] in
+      gameState.refClaims
   ) {
     return interaction.reply({
       content: `It's not time for you to make a claim!`,
@@ -59,11 +60,11 @@ async function execute(interaction, user) {
     .indexOf(gameState.refChain[refChain.indexOf(interaction.user.id) + 1]);
   if (
     (gameState.players[playerIndex].team === 'Resistance' &&
-    gameState.players[reffedIndex].team === 'Resistance' &&
-    targetClaim === 'spy') ||
+      gameState.players[reffedIndex].team === 'Resistance' &&
+      targetClaim === 'spy') ||
     (gameState.players[playerIndex].team === 'Resistance' &&
-    gameState.players[reffedIndex].team === 'Spy' &&
-    targetClaim === 'resistance')
+      gameState.players[reffedIndex].team === 'Spy' &&
+      targetClaim === 'resistance')
   ) {
     return interaction.reply({
       content: `Don't throw! You shouldn't lie if you are Resistance.`,
@@ -71,7 +72,9 @@ async function execute(interaction, user) {
     });
   }
 
-  gameState.refClaims[gameState.refChain[refChain.indexOf(interaction.user.id) + 1]] = targetClaim;
+  gameState.refClaims[
+    gameState.refChain[refChain.indexOf(interaction.user.id) + 1]
+  ] = targetClaim;
 
   await gameInfo.set('gameState', gameState);
 
