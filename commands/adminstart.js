@@ -6,7 +6,7 @@ const {
   PermissionFlagsBits,
 } = require('discord.js');
 
-const { sendVoteState } = require('../message-helpers');
+const { startGame } = require('../message-helpers');
 
 const data = new SlashCommandBuilder()
   .setName('adminstart')
