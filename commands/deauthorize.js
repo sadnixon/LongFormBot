@@ -25,7 +25,7 @@ async function execute(interaction, user) {
 
   const authorizedUsers = (await authorizedDataSetters.get('auth')) ?? [];
 
-  await authorized_data_setters.set(
+  await authorizedDataSetters.set(
     'auth',
     authorizedUsers.filter((x) => x !== targetUser.id),
   );
