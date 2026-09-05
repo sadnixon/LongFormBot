@@ -21,17 +21,17 @@ const data = new SlashCommandBuilder()
     option
       .setName('claim')
       .setDescription('The team that you are claiming to have seen')
-      .setRequired(true),
-  )
-  .addChoices(
-    {
-      name: 'Resistance',
-      value: 'resistance',
-    },
-    {
-      name: 'Spy',
-      value: 'spy',
-    },
+      .setRequired(true)
+      .addChoices(
+        {
+          name: 'Resistance',
+          value: 'resistance',
+        },
+        {
+          name: 'Spy',
+          value: 'spy',
+        },
+      ),
   );
 
 async function execute(interaction, user) {
