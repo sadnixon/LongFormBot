@@ -694,10 +694,10 @@ async function endGame(client) {
 
   for (const id in currentPlayers) {
     await genChannel.permissionOverwrites.edit(id, {
-      [PermissionFlagsBits.SendMessages]: true,
+      [PermissionFlagsBits.SendMessages]: false,
     });
     await picksChannel.permissionOverwrites.edit(id, {
-      [PermissionFlagsBits.SendMessages]: true,
+      [PermissionFlagsBits.SendMessages]: false,
     });
     await heavenChannel.permissionOverwrites.edit(id, {
       [PermissionFlagsBits.ViewChannel]: true,

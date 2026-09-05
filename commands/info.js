@@ -59,6 +59,11 @@ async function execute(interaction, user) {
           "Pick a player to use the Ref of the Rain card on",
       },
       {
+        name: '/claim',
+        value:
+          'Claim the result of the Ref of the Rain card',
+      },
+      {
         name: '/witch',
         value:
           "Pick a player to Witch guess",
@@ -87,6 +92,11 @@ async function execute(interaction, user) {
         name: '/ascend',
         value:
           "Ascend to Res Heaven",
+      },
+      {
+        name: '/kiss',
+        value:
+          'Kiss!',
       },
       {
         name: '/info',

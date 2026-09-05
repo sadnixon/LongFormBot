@@ -160,6 +160,9 @@ async function initializeData() {
   if (!(await gameInfo.has('inReady'))) {
     await gameInfo.set('inReady', false);
   }
+  if (!(await gameInfo.has('kisses'))) {
+    await gameInfo.set('kisses', {});
+  }
 }
 
 // -----------------------------------------------------------------------------

@@ -57,9 +57,12 @@ async function execute(interaction, user) {
   const targetPlayerIndex = gameState.players
     .map((e) => e.id)
     .indexOf(targetPlayer.id);
-  const targetPlayer2Index = gameState.players
-    .map((e) => e.id)
-    .indexOf(targetPlayer2.id);
+  let targetPlayer2Index;
+  if (targetPlayer2) {
+    targetPlayer2Index = gameState.players
+      .map((e) => e.id)
+      .indexOf(targetPlayer2.id);
+  }
   if (
     !currentPlayers.includes(targetPlayer.id) ||
     (targetPlayer2 && !currentPlayers.includes(targetPlayer2.id)) ||
