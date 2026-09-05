@@ -230,7 +230,7 @@ function initializeTaskHandlers(discordClient) {
     const genChannel = await guild.channels.fetch(
       gameChannels['general'].channelId,
     );
-    const announceChannel = await interaction.guild.channels.fetch(
+    const announceChannel = await guild.channels.fetch(
       gameChannels['announcements'].channelId,
     );
 

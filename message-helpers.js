@@ -688,7 +688,7 @@ async function endGame(client) {
   const heavenChannel = await guild.channels.fetch(
     gameChannels['heaven'].channelId,
   );
-  const announceChannel = await interaction.guild.channels.fetch(
+  const announceChannel = await guild.channels.fetch(
     gameChannels['announcements'].channelId,
   );
 
