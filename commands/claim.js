@@ -42,7 +42,7 @@ async function execute(interaction, user) {
     !gameOngoing ||
     !currentPlayers.includes(interaction.user.id) ||
     !gameState.refChain.slice(0, -1).includes(interaction.user.id) ||
-    gameState.refChain[refChain.indexOf(interaction.user.id) + 1] in
+    gameState.refChain[gameState.refChain.indexOf(interaction.user.id) + 1] in
       gameState.refClaims
   ) {
     return interaction.reply({
@@ -57,7 +57,7 @@ async function execute(interaction, user) {
     .indexOf(interaction.user.id);
   const reffedIndex = gameState.players
     .map((e) => e.id)
-    .indexOf(gameState.refChain[refChain.indexOf(interaction.user.id) + 1]);
+    .indexOf(gameState.refChain[gameState.refChain.indexOf(interaction.user.id) + 1]);
   if (
     (gameState.players[playerIndex].team === 'Resistance' &&
       gameState.players[reffedIndex].team === 'Resistance' &&
@@ -73,7 +73,7 @@ async function execute(interaction, user) {
   }
 
   gameState.refClaims[
-    gameState.refChain[refChain.indexOf(interaction.user.id) + 1]
+    gameState.refChain[gameState.refChain.indexOf(interaction.user.id) + 1]
   ] = targetClaim;
 
   await gameInfo.set('gameState', gameState);
