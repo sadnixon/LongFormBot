@@ -86,7 +86,7 @@ async function execute(interaction, user) {
   await announceChannel.send(
     standardEmbed(
       'A claim has been made!',
-      `**<@${interaction.user.id}> claims the Ref of the Rain has revealed that <@${gameState.refChain[refChain.indexOf(interaction.user.id) + 1]}> is on the ${targetClaim.toUpperCase()} team!**`,
+      `**<@${interaction.user.id}> claims the Ref of the Rain has revealed that <@${gameState.refChain[gameState.refChain.indexOf(interaction.user.id) + 1]}> is on the ${targetClaim.toUpperCase()} team!**`,
     ),
   );
   await interaction.reply({
