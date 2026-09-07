@@ -52,6 +52,7 @@ async function execute(interaction, user) {
   const gameOngoing = await gameInfo.get('inPlay');
   const gameState = await gameInfo.get('gameState');
   const currentPlayers = await gameInfo.get('players');
+  const playerIndex = gameState.players.map((e) => e.id).indexOf(userId);
   if (
     !gameOngoing ||
     !currentPlayers.includes(userId) ||
@@ -64,7 +65,6 @@ async function execute(interaction, user) {
     });
   }
 
-  const playerIndex = gameState.players.map((e) => e.id).indexOf(userId);
   const puppeteerIndex = gameState.players
     .map((e) => e.id)
     .indexOf(interaction.user.id);

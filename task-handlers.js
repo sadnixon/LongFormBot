@@ -293,8 +293,8 @@ function initializeTaskHandlers(discordClient) {
     const guild = await client.guilds.fetch(gameState.guildId);
 
     const gameChannels = await gameInfo.get('game_channels');
-    const genChannel = await guild.channels.fetch(
-      gameChannels['general'].channelId,
+    const announceChannel = await guild.channels.fetch(
+      gameChannels['announcements'].channelId,
     );
 
     gameState.phaseTimers = [];
@@ -318,12 +318,24 @@ function initializeTaskHandlers(discordClient) {
     const assassinId = gameState.players.filter((e) => e.role === 'Assassin')[0]
       .id;
 
-    await genChannel.send(
-      standardEmbed(
-        'An assassination was made!',
-        `<@${assassinId}> (randomly) assassinated <@${gameState.assassinShot[0]}> as Merlin!\nTheir role was ${gameState.players[targetPlayerIndex].role}.`,
-      ),
-    );
+    const correctShot = gameState.players[targetPlayerIndex].role === 'Merlin';
+    const actualMerlin = gameState.players.filter((e) => e.role === 'Merlin')[0]
+      .id;
+    if (correctShot) {
+      await announceChannel.send(
+        standardEmbed(
+          'An assassination was made!',
+          `**<@${assassinId}> (randomly) assassinated <@${gameState.assassinShot[0]}> as Merlin!**\nTheir role was indeed ${gameState.players[targetPlayerIndex].role}!`,
+        ),
+      );
+    } else {
+      await announceChannel.send(
+        standardEmbed(
+          'An assassination was made!',
+          `**<@${assassinId}> (randomly) assassinated <@${gameState.assassinShot[0]}> as Merlin!**\nBut their role was ${gameState.players[targetPlayerIndex].role}.\n\nThe real Merlin was <@${actualMerlin}>.`,
+        ),
+      );
+    }
 
     await endGame(client);
   });

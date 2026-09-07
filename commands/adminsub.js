@@ -170,6 +170,9 @@ async function execute(interaction, user) {
   const genChannel = await interaction.guild.channels.fetch(
     gameChannels['general'].channelId,
   );
+  const nongameChannel = await interaction.guild.channels.fetch(
+    gameChannels['nongame'].channelId,
+  );
   const picksChannel = await interaction.guild.channels.fetch(
     gameChannels['picks'].channelId,
   );
@@ -190,8 +193,16 @@ async function execute(interaction, user) {
     [PermissionFlagsBits.SendMessages]: true,
     [PermissionFlagsBits.ReadMessageHistory]: true,
   });
+  await nongameChannel.permissionOverwrites.edit(inUser, {
+    [PermissionFlagsBits.ViewChannel]: true,
+    [PermissionFlagsBits.SendMessages]: true,
+    [PermissionFlagsBits.ReadMessageHistory]: true,
+  });
 
   await genChannel.permissionOverwrites.edit(outUser, {
+    [PermissionFlagsBits.SendMessages]: false,
+  });
+  await nongameChannel.permissionOverwrites.edit(outUser, {
     [PermissionFlagsBits.SendMessages]: false,
   });
   await picksChannel.permissionOverwrites.edit(outUser, {
@@ -216,7 +227,7 @@ async function execute(interaction, user) {
     .filter((e) => ['Morgana', 'Assassin', 'Oberon', 'Witch'].includes(e.role))
     .map((e) => e.id);
   const knownSpies = gameState.players
-    .filter((e) => ['Morgana', 'Assassin', 'Mordred', 'Witch'].includes(e.role))
+    .filter((e) => ['Morgana', 'Assassin', 'Mordred', 'Witch', 'Guinevere'].includes(e.role))
     .map((e) => e.id);
   const merlinOptions = gameState.players
     .filter((e) => ['Merlin', 'Morgana'].includes(e.role))
@@ -225,7 +236,7 @@ async function execute(interaction, user) {
   const tristanId = gameState.players.filter((e) => e.role === 'Tristan')[0].id;
 
   if (
-    ['Morgana', 'Assassin', 'Mordred', 'Witch'].includes(
+    ['Morgana', 'Assassin', 'Mordred', 'Witch', 'Guinevere'].includes(
       gameState.players[playerIndex].role,
     )
   ) {
@@ -237,8 +248,8 @@ async function execute(interaction, user) {
 
     await playerChannel.send(
       standardEmbed(
-        'You see the following Spies:',
-        knownSpies.map((e) => `<@${e}>`).join(', '),
+        'Your co-Spies, the Minions of Mordred, stand assembled:',
+        `${knownSpies.map((e) => `<@${e}>`).join(', ')}\nYour last ally, Oberon the King of Fairies, didn't make it to the meeting.`,
       ),
     );
   } else if (
@@ -262,14 +273,14 @@ async function execute(interaction, user) {
   } else if (gameState.players[playerIndex].role === 'Merlin') {
     await playerChannel.send(
       standardEmbed(
-        'You see the following Spies:',
-        visibleSpies.map((e) => `<@${e}>`).join(', '),
+        'You ponder your orb and see the following Spies, the Minions of Mordred:',
+        `${visibleSpies.map((e) => `<@${e}>`).join(', ')}\nHowever, Mordred himself is invisible to you.`,
       ),
     );
   } else if (gameState.players[playerIndex].role === 'Percival') {
     await playerChannel.send(
       standardEmbed(
-        'You see the following Merlin options:',
+        'The evil enchantress Morgana cast a spell on herself and the honorable Merlin; you do not know which is which:',
         merlinOptions.map((e) => `<@${e}>`).join(', '),
       ),
     );

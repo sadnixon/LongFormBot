@@ -125,19 +125,50 @@ async function execute(interaction, user) {
   );
 
   if (gameState.assassinShot.length === 2) {
-    await announceChannel.send(
-      standardEmbed(
-        'An assassination was made!',
-        `<@${userId}> assassinated <@${gameState.assassinShot[0]}> and <@${gameState.assassinShot[1]}> as the Lovers!\nTheir roles were ${gameState.players[targetPlayerIndex].role} and ${gameState.players[targetPlayer2Index].role}.`,
-      ),
-    );
+    const correctShot =
+      ['Tristan', 'Isolde'].includes(
+        gameState.players[targetPlayerIndex].role,
+      ) &&
+      ['Tristan', 'Isolde'].includes(
+        gameState.players[targetPlayer2Index].role,
+      );
+    const actualLovers = gameState.players
+      .filter((e) => ['Tristan', 'Isolde'].includes(e.role))
+      .map((e) => e.id);
+    if (correctShot) {
+      await announceChannel.send(
+        standardEmbed(
+          'An assassination was made!',
+          `**<@${userId}> assassinated <@${gameState.assassinShot[0]}> and <@${gameState.assassinShot[1]}> as the Lovers!**\nTheir roles were indeed ${gameState.players[targetPlayerIndex].role} and ${gameState.players[targetPlayer2Index].role}!`,
+        ),
+      );
+    } else {
+      await announceChannel.send(
+        standardEmbed(
+          'An assassination was made!',
+          `**<@${userId}> assassinated <@${gameState.assassinShot[0]}> and <@${gameState.assassinShot[1]}> as the Lovers!**\nBut their roles were ${gameState.players[targetPlayerIndex].role} and ${gameState.players[targetPlayer2Index].role}.\n\nThe real Lovers were ${actualLovers.map((e) => `<@${e}>`).join(' and ')}.`,
+        ),
+      );
+    }
   } else {
-    await announceChannel.send(
-      standardEmbed(
-        'An assassination was made!',
-        `<@${userId}> assassinated <@${gameState.assassinShot[0]}> as Merlin!\nTheir role was ${gameState.players[targetPlayerIndex].role}.`,
-      ),
-    );
+    const correctShot = gameState.players[targetPlayerIndex].role === 'Merlin';
+    const actualMerlin = gameState.players.filter((e) => e.role === 'Merlin')[0]
+      .id;
+    if (correctShot) {
+      await announceChannel.send(
+        standardEmbed(
+          'An assassination was made!',
+          `**<@${userId}> assassinated <@${gameState.assassinShot[0]}> as Merlin!**\nTheir role was indeed ${gameState.players[targetPlayerIndex].role}!`,
+        ),
+      );
+    } else {
+      await announceChannel.send(
+        standardEmbed(
+          'An assassination was made!',
+          `**<@${userId}> assassinated <@${gameState.assassinShot[0]}> as Merlin!**\nBut their role was ${gameState.players[targetPlayerIndex].role}.\n\nThe real Merlin was <@${actualMerlin}>.`,
+        ),
+      );
+    }
   }
   await endGame(interaction.client);
 }

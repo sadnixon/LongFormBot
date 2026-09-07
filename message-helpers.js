@@ -326,10 +326,15 @@ async function sendGameState(
   const genChannel = await guild.channels.fetch(
     gameChannels['general'].channelId,
   );
+  const announceChannel = await guild.channels.fetch(
+    gameChannels['announcements'].channelId,
+  );
   const currentChannel = interaction ? interaction.channel : genChannel;
   let channel;
   if (chanSelect === 'general') {
     channel = genChannel;
+  } else if (chanSelect === 'announce') {
+    channel = announceChannel;
   } else {
     channel = currentChannel;
   }
@@ -777,6 +782,7 @@ async function endGame(client) {
   await gameInfo.set('inPlay', false);
   await gameInfo.set('players', []);
   await sendGameState(client, 'general', true, winningTeam);
+  await sendGameState(client, 'announce', true, winningTeam);
 }
 
 const shuffleArray = (array) => {

@@ -60,9 +60,13 @@ const data = new SlashCommandBuilder()
   .addUserOption((option) =>
     option
       .setName('player7')
-      .setDescription(
-        'The seventh player to add to your mission (Pick on M4/6/7)',
-      )
+      .setDescription('The seventh player to add to your mission')
+      .setRequired(false),
+  )
+  .addUserOption((option) =>
+    option
+      .setName('player8')
+      .setDescription('The eighth player to add to your mission')
       .setRequired(false),
   );
 
@@ -89,7 +93,7 @@ async function execute(interaction, user) {
   }
   const currentPlayers = await gameInfo.get('players');
   const targetUsers = [];
-  for (let i = 1; i < 8; i++) {
+  for (let i = 1; i < 9; i++) {
     targetUsers.push(interaction.options.getUser(`player${i}`));
   }
   const targetIds = targetUsers

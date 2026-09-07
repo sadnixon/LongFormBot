@@ -66,9 +66,13 @@ const data = new SlashCommandBuilder()
   .addUserOption((option) =>
     option
       .setName('player7')
-      .setDescription(
-        'The seventh player to add to your mission (Pick on M4/6/7)',
-      )
+      .setDescription('The seventh player to add to your mission')
+      .setRequired(false),
+  )
+  .addUserOption((option) =>
+    option
+      .setName('player8')
+      .setDescription('The eighth player to add to your mission')
       .setRequired(false),
   );
 
@@ -119,7 +123,7 @@ async function execute(interaction, user) {
   }
 
   const targetUsers = [];
-  for (let i = 1; i < 8; i++) {
+  for (let i = 1; i < 9; i++) {
     targetUsers.push(interaction.options.getUser(`player${i}`));
   }
   const targetIds = targetUsers
@@ -165,9 +169,8 @@ async function execute(interaction, user) {
   const voteMaj = gameState.players.length === 13 ? 7 : 8;
 
   if (
-    gameState.missionVotes[gameState.missionIndex].filter(
-      (e) => e === userId,
-    ).length >= voteMaj
+    gameState.missionVotes[gameState.missionIndex].filter((e) => e === userId)
+      .length >= voteMaj
   ) {
     await clearTasks();
     const gameState = await gameInfo.get('gameState');
