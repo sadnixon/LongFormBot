@@ -144,7 +144,7 @@ function initializeTaskHandlers(discordClient) {
     gameState.phaseTimers = gameState.phaseTimers.slice(1);
 
     const notPicked = gameState.missionPickers[gameState.missionIndex].filter(
-      (e) => !(e in Object.keys(gameState.missionPicks)),
+      (e) => !(e in gameState.missionPicks[gameState.missionIndex]),
     );
 
     for (const player of notPicked) {
