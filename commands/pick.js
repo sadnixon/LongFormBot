@@ -118,10 +118,23 @@ async function execute(interaction, user) {
     gameChannels['general'].channelId,
   );
 
+  const pickedBefore =
+    interaction.user.id in gameState.missionPicks[gameState.missionIndex];
+
   gameState.missionPicks[gameState.missionIndex][interaction.user.id] = {
     id: interaction.user.id,
     team: targetIds,
   };
+
+  if (
+    gameState.missionVotes[gameState.missionIndex].filter(
+      (e) => e === interaction.user.id,
+    ).length >= 3 &&
+    pickedBefore
+  ) {
+    gameState.missionVotes[gameState.missionIndex] =
+      Array(gameState.players.length).fill(null);
+  }
 
   await gameInfo.set('gameState', gameState);
 
