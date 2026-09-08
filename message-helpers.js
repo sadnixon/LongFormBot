@@ -420,7 +420,7 @@ async function sendGameState(
   const missionSection = gameState.passedMissions
     .map(
       (e, i) =>
-        `**M${i + 1}:** ${gameState.missionResults[i] ? (gameState.missionResults[i].result === 'fail' ? `🟥 (${gameState.missionResults[i].fails})` : `🟦 (${gameState.missionResults[i].fails})`) : ''}<@${e.id}>'s (${e.team.map((e1) => `<@${e1}>`).join(' + ')})`,
+        `**M${i + 1}:** ${gameState.missionResults[i] ? (gameState.missionResults[i].result === 'fail' ? `🟥 (${gameState.missionResults[i].fails})` : `🟦 (${gameState.missionResults[i].fails})`) : ''}<@${e.id}>'s Mission`,
     )
     .join('\n');
 
