@@ -12,6 +12,10 @@ const data = new SlashCommandBuilder()
       .setRequired(true)
       .addChoices(
         {
+          name: 'Timers',
+          value: 'timers',
+        },
+        {
           name: 'Current Game',
           value: 'game',
         },
@@ -26,10 +30,6 @@ const data = new SlashCommandBuilder()
         {
           name: 'Signups',
           value: 'signups',
-        },
-        {
-          name: 'Timers',
-          value: 'timers',
         },
         {
           name: 'Ready',

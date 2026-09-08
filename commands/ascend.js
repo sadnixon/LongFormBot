@@ -37,7 +37,7 @@ async function execute(interaction, user) {
   }
 
   await interaction.reply({
-    content: `<@${interaction.user.id}> is ascending to Heaven!"`,
+    content: `<@${interaction.user.id}> is ascending to Heaven!`,
     ephemeral: false,
   });
 

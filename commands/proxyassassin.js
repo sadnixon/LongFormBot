@@ -54,7 +54,7 @@ async function execute(interaction, user) {
   if (
     !currentPlayers.includes(userId) ||
     !(
-      ['Mordred', 'Witch', 'Morgana'].includes(
+      ['Morgana', 'Mordred', 'Witch', 'Guinevere', 'Oberon'].includes(
         gameState.players[puppeteerIndex]?.role,
       ) || user.isAuthorized
     )
@@ -91,11 +91,11 @@ async function execute(interaction, user) {
   if (
     !currentPlayers.includes(targetPlayer.id) ||
     (targetPlayer2 && !currentPlayers.includes(targetPlayer2.id)) ||
-    ['Assassin', 'Morgana', 'Mordred', 'Witch'].includes(
+    ['Assassin', 'Morgana', 'Mordred', 'Witch', 'Guinevere', 'Oberon'].includes(
       gameState.players[targetPlayerIndex]?.role,
     ) ||
     (targetPlayer2 &&
-      ['Assassin', 'Morgana', 'Mordred', 'Witch'].includes(
+      ['Assassin', 'Morgana', 'Mordred', 'Witch', 'Guinevere', 'Oberon'].includes(
         gameState.players[targetPlayer2Index]?.role,
       ))
   ) {

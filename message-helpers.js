@@ -119,7 +119,21 @@ async function startGame(interaction) {
   }
 
   for (const channel of [genChannel, picksChannel, nongameChannel]) {
-    await channel.permissionOverwrites.set([]);
+    await channel.permissionOverwrites.set([
+      {
+        id: interaction.guild.roles.everyone.id,
+        deny: [PermissionFlagsBits.SendMessages],
+      },
+      {
+        id: interaction.guild.members.me.id,
+        allow: [
+          PermissionFlagsBits.ViewChannel,
+          PermissionFlagsBits.SendMessages,
+          PermissionFlagsBits.ReadMessageHistory,
+          PermissionFlagsBits.ManageChannels,
+        ],
+      },
+    ]);
   }
 
   for (const channel of [loversChannel, spiesChannel, heavenChannel]) {
@@ -233,7 +247,7 @@ async function startGame(interaction) {
       await playerChannel.send(
         standardEmbed(
           'You ponder your orb and see the following Spies, the Minions of Mordred:',
-          `${visibleSpies.map((e) => `<@${e}>`).join(', ')}\nHowever, Mordred himself is invisible to you.`,
+          `${visibleSpies.map((e) => `<@${e}>`).join(', ')}\nHowever, Mordred himself is invisible to you.${shuffledRoles.includes('Guinevere') ? " Guinevere is also invisible." : ""}`,
         ),
       );
     } else if (shuffledRoles[i] === 'Percival') {
@@ -295,6 +309,7 @@ async function startGame(interaction) {
     assassinShot: [],
     currentState: 'pickWait',
     phaseTimers: [],
+    pausedState: null,
   };
 
   if (shuffledPlayers.length > 14) {

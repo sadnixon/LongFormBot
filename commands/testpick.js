@@ -162,7 +162,7 @@ async function execute(interaction, user) {
   if (
     gameState.missionVotes[gameState.missionIndex].filter(
       (e) => e === userId,
-    ).length >= 3 &&
+    ).length >= 4 &&
     pickedBefore
   ) {
     gameState.missionVotes[gameState.missionIndex] =

@@ -32,6 +32,16 @@ function initializeTaskHandlers(discordClient) {
       gameChannels['general'].channelId,
     );
 
+    if (gameState.currentState === 'adminPaused') {
+      await genChannel.send(
+        standardEmbed(
+          'TIMER IGNORED',
+          "The vote timer has been ignored due to the game's paused state.",
+        ),
+      );
+      return;
+    }
+
     gameState.phaseTimers = [];
 
     let mostVotes = 0;
@@ -88,7 +98,20 @@ function initializeTaskHandlers(discordClient) {
     const gameState = await gameInfo.get('gameState');
     const guild = await client.guilds.fetch(gameState.guildId);
 
-    if (gameState.currentState !== 'missionWait') {
+    if (gameState.currentState === 'adminPaused') {
+      const gameChannels = await gameInfo.get('game_channels');
+      const genChannel = await guild.channels.fetch(
+        gameChannels['general'].channelId,
+      );
+
+      await genChannel.send(
+        standardEmbed(
+          'TIMER IGNORED',
+          "The mission timer has been ignored due to the game's paused state.",
+        ),
+      );
+      return;
+    } else if (gameState.currentState !== 'missionWait') {
       return;
     }
 
@@ -139,6 +162,20 @@ function initializeTaskHandlers(discordClient) {
     const pickChannel = await guild.channels.fetch(
       gameChannels['picks'].channelId,
     );
+
+    if (gameState.currentState === 'adminPaused') {
+      const genChannel = await guild.channels.fetch(
+        gameChannels['general'].channelId,
+      );
+
+      await genChannel.send(
+        standardEmbed(
+          'TIMER IGNORED',
+          "The pick timer has been ignored due to the game's paused state.",
+        ),
+      );
+      return;
+    }
 
     //removing from gameState the first timer
     gameState.phaseTimers = gameState.phaseTimers.slice(1);
@@ -236,6 +273,17 @@ function initializeTaskHandlers(discordClient) {
       gameChannels['announcements'].channelId,
     );
 
+    if (gameState.currentState === 'adminPaused') {
+
+      await genChannel.send(
+        standardEmbed(
+          'TIMER IGNORED',
+          "The Ref timer has been ignored due to the game's paused state.",
+        ),
+      );
+      return;
+    }
+
     gameState.phaseTimers = [];
 
     const targetPlayer = shuffleArray(
@@ -296,6 +344,20 @@ function initializeTaskHandlers(discordClient) {
     const announceChannel = await guild.channels.fetch(
       gameChannels['announcements'].channelId,
     );
+
+    if (gameState.currentState === 'adminPaused') {
+      const genChannel = await guild.channels.fetch(
+        gameChannels['general'].channelId,
+      );
+
+      await genChannel.send(
+        standardEmbed(
+          'TIMER IGNORED',
+          "The Assassin timer has been ignored due to the game's paused state.",
+        ),
+      );
+      return;
+    }
 
     gameState.phaseTimers = [];
 

@@ -46,8 +46,8 @@ async function execute(interaction, user) {
     await gameInfo.set('inReady', false);
 
     await interaction.reply({
-      content: 'Kicked em!',
-      ephemeral: true,
+      content: `<@${targetUser.id}> has been kicked from the lobby! Player count is at ${currentPlayers.filter((x) => x !== targetUser.id).length}/15.`,
+      ephemeral: false,
     });
   } else {
     await interaction.reply({

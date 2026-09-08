@@ -274,7 +274,7 @@ async function execute(interaction, user) {
     await playerChannel.send(
       standardEmbed(
         'You ponder your orb and see the following Spies, the Minions of Mordred:',
-        `${visibleSpies.map((e) => `<@${e}>`).join(', ')}\nHowever, Mordred himself is invisible to you.`,
+        `${visibleSpies.map((e) => `<@${e}>`).join(', ')}\nHowever, Mordred himself is invisible to you.${gameState.players.map((e) => e.role).includes('Guinevere') ? " Guinevere is also invisible." : ""}`,
       ),
     );
   } else if (gameState.players[playerIndex].role === 'Percival') {

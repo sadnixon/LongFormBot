@@ -107,10 +107,10 @@ async function execute(interaction, user) {
   if (
     !currentPlayers.includes(userId) ||
     !(
-      (['Mordred', 'Witch', 'Morgana', 'Assassin'].includes(
+      (['Mordred', 'Witch', 'Morgana', 'Assassin', 'Guinevere'].includes(
         gameState.players[puppeteerIndex]?.role,
       ) &&
-        ['Mordred', 'Witch', 'Morgana', 'Assassin'].includes(
+        ['Mordred', 'Witch', 'Morgana', 'Assassin', 'Guinevere'].includes(
           gameState.players[playerIndex]?.role,
         )) ||
       user.isAuthorized
@@ -159,7 +159,7 @@ async function execute(interaction, user) {
   if (
     gameState.missionVotes[gameState.missionIndex].filter(
       (e) => e === userId,
-    ).length >= 3 &&
+    ).length >= 4 &&
     pickedBefore
   ) {
     gameState.missionVotes[gameState.missionIndex] =
