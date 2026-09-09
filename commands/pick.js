@@ -132,8 +132,9 @@ async function execute(interaction, user) {
     ).length >= 4 &&
     pickedBefore
   ) {
-    gameState.missionVotes[gameState.missionIndex] =
-      Array(gameState.players.length).fill(null);
+    gameState.missionVotes[gameState.missionIndex] = gameState.missionVotes[
+      gameState.missionIndex
+    ].map((item) => (item === interaction.user.id ? null : item));
   }
 
   await gameInfo.set('gameState', gameState);
