@@ -297,17 +297,17 @@ async function startGame(interaction) {
     }
   }
 
-  //let uid = generateCombination(3, '', true);
-  //while (true) {
-  //  const foundGame = await gameHistory.get(uid);
-  //  if (foundGame) uid = generateCombination(3, '', true);
-  //  else break;
-  //}
+  let uid = generateCombination(3, '', true);
+  while (true) {
+    const foundGame = await gameHistory.get(uid);
+    if (foundGame) uid = generateCombination(3, '', true);
+    else break;
+  }
 
   const startState = {
     startTime: Date.now(),
     endTime: null,
-    gameId: Date.now(),
+    gameId: uid,
     guildId: interaction.guildId,
     missionSizes:
       shuffledPlayers.length === 13
@@ -360,7 +360,7 @@ async function startGame(interaction) {
   };
 
   if (shuffledPlayers.length > 14) {
-    missionPickers[0].push(shuffledPlayers[3]);
+    startState.missionPickers[0].push(shuffledPlayers[3]);
   }
 
   console.log(startState);
