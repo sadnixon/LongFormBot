@@ -5,6 +5,7 @@ const {
 } = require('discord.js');
 const _ = require('lodash');
 const { clearTasks, scheduleInXHours, cancelTask } = require('./scheduler');
+const { generateCombination } = require('gfycat-style-urls');
 
 const errorMessage = (message) => {
   return {
@@ -247,7 +248,7 @@ async function startGame(interaction) {
       await playerChannel.send(
         standardEmbed(
           'You ponder your orb and see the following Spies, the Minions of Mordred:',
-          `${visibleSpies.map((e) => `<@${e}>`).join(', ')}\nHowever, Mordred himself is invisible to you.${shuffledRoles.includes('Guinevere') ? " Guinevere is also invisible." : ""}`,
+          `${visibleSpies.map((e) => `<@${e}>`).join(', ')}\nHowever, Mordred himself is invisible to you.${shuffledRoles.includes('Guinevere') ? ' Guinevere is also invisible.' : ''}`,
         ),
       );
     } else if (shuffledRoles[i] === 'Percival') {
@@ -260,7 +261,17 @@ async function startGame(interaction) {
     }
   }
 
+  let uid = generateCombination(3, '', true);
+  while (true) {
+    const foundGame = await gameHistory.get(uid);
+    if (foundGame) uid = generateCombination(3, '', true);
+    else break;
+  }
+
   const startState = {
+    startTime: Date.now(),
+    endTime: null,
+    gameId: uid,
     guildId: interaction.guildId,
     missionSizes:
       shuffledPlayers.length === 13
@@ -794,6 +805,9 @@ async function endGame(client) {
     );
     winningTeam = 'Resistance';
   }
+  gameState.endTime = Date.now();
+  await gameInfo.set('gameState', gameState);
+  await gameHistory.set(gameState.gameId, gameState);
   await gameInfo.set('inPlay', false);
   await gameInfo.set('players', []);
   await sendGameState(client, 'general', true, winningTeam);

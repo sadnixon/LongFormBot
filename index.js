@@ -61,6 +61,13 @@ global.gameInfo = ENABLE_DB
     })
   : new Keyv();
 
+global.gameHistory = ENABLE_DB
+  ? new Keyv({
+      store: mongoStore,
+      namespace: 'game_history',
+    })
+  : new Keyv();
+
 global.schedDB = ENABLE_DB
   ? new Keyv({
       store: mongoStore,
@@ -70,6 +77,11 @@ global.schedDB = ENABLE_DB
 
 authorizedDataSetters.on('error', (error) => {
   console.error('Authorized data store error:', error);
+  Sentry.captureException(error);
+});
+
+gameHistory.on('error', (error) => {
+  console.error('Game history store error:', error);
   Sentry.captureException(error);
 });
 
