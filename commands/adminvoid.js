@@ -36,8 +36,8 @@ const data = new SlashCommandBuilder()
           value: 'ready',
         },
         {
-          name: 'Special',
-          value: 'special',
+          name: 'Back To Ready',
+          value: 'back',
         },
       ),
   );
@@ -72,10 +72,12 @@ async function execute(interaction, user) {
   } else if (voidType === 'ready') {
     await gameInfo.set('inReady', false);
     await gameInfo.set('inPlay', false);
-  } else if (voidType === 'special') {
-    const gameState = await gameInfo.get('gameState');
-    gameState.missionPickers[0].push(gameState.players[3].id);
-    await gameInfo.set('gameState', gameState);
+  } else if (voidType === 'back') {
+    await gameInfo.set('gameState', {});
+    await gameInfo.set('readyPlayers', []);
+    await gameInfo.set('inPlay', false);
+    await gameInfo.set('inReady', true);
+    await schedDB.clear();
   } else if (voidType === 'timers') {
     await schedDB.clear();
     const gameState = await gameInfo.get('gameState');

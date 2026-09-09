@@ -208,9 +208,20 @@ async function startGame(interaction) {
         [PermissionFlagsBits.ReadMessageHistory]: false,
       });
     }
-    const playerChannel = await interaction.guild.channels.fetch(
-      playerChannels[shuffledPlayers[i]].channelId,
-    );
+    let playerChannel;
+    try {
+      playerChannel = await interaction.guild.channels.fetch(
+        playerChannels[shuffledPlayers[i]].channelId,
+      );
+    } catch (error) {
+      console.error('Failed to get all channels:', error);
+      process.exitCode = 1;
+      return interaction.reply({
+        content: `Game cannot start, the required game channel from <${shuffledPlayers[i]}>!`,
+        ephemeral: false,
+      });
+    }
+
     await playerChannel.send(
       `**<@${shuffledPlayers[i]}>, you are ${shuffledRoles[i]}!**`,
     );
@@ -286,17 +297,17 @@ async function startGame(interaction) {
     }
   }
 
-  let uid = generateCombination(3, '', true);
-  while (true) {
-    const foundGame = await gameHistory.get(uid);
-    if (foundGame) uid = generateCombination(3, '', true);
-    else break;
-  }
+  //let uid = generateCombination(3, '', true);
+  //while (true) {
+  //  const foundGame = await gameHistory.get(uid);
+  //  if (foundGame) uid = generateCombination(3, '', true);
+  //  else break;
+  //}
 
   const startState = {
     startTime: Date.now(),
     endTime: null,
-    gameId: uid,
+    gameId: Date.now(),
     guildId: interaction.guildId,
     missionSizes:
       shuffledPlayers.length === 13
