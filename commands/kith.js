@@ -27,7 +27,7 @@ async function execute(interaction, user) {
   }
   const gameChannels = await gameInfo.get('game_channels');
 
-  if (!interaction.channel.id === gameChannels['general'].channelId) {
+  if (interaction.channel.id === gameChannels['general'].channelId) {
     return interaction.reply({
       content: 'This command cannot be used in the game chat.',
       ephemeral: true,
