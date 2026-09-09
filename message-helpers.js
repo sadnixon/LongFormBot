@@ -137,7 +137,7 @@ async function startGame(interaction) {
     ]);
   }
 
-  for (const channel of [loversChannel, spiesChannel, heavenChannel]) {
+  for (const channel of [loversChannel, spiesChannel]) {
     await channel.permissionOverwrites.set([
       {
         id: interaction.guild.roles.everyone.id,
@@ -154,6 +154,26 @@ async function startGame(interaction) {
       },
     ]);
   }
+
+  await heavenChannel.permissionOverwrites.set([
+    {
+      id: interaction.guild.roles.everyone.id,
+      allow: [
+        PermissionFlagsBits.ViewChannel,
+        PermissionFlagsBits.ReadMessageHistory,
+      ],
+      deny: [PermissionFlagsBits.SendMessages],
+    },
+    {
+      id: interaction.guild.members.me.id,
+      allow: [
+        PermissionFlagsBits.ViewChannel,
+        PermissionFlagsBits.SendMessages,
+        PermissionFlagsBits.ReadMessageHistory,
+        PermissionFlagsBits.ManageChannels,
+      ],
+    },
+  ]);
 
   for (let i = 0; i < player_num; i++) {
     if (
@@ -181,6 +201,11 @@ async function startGame(interaction) {
         [PermissionFlagsBits.ViewChannel]: true,
         [PermissionFlagsBits.SendMessages]: true,
         [PermissionFlagsBits.ReadMessageHistory]: true,
+      });
+      await heavenChannel.permissionOverwrites.edit(shuffledPlayers[i], {
+        [PermissionFlagsBits.ViewChannel]: false,
+        [PermissionFlagsBits.SendMessages]: false,
+        [PermissionFlagsBits.ReadMessageHistory]: false,
       });
     }
     const playerChannel = await interaction.guild.channels.fetch(
