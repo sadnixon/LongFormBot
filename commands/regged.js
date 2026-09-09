@@ -23,6 +23,7 @@ async function execute(interaction, user) {
     ephemeral: false,
   });
   for (const player of Object.keys(playerChannels)) {
+    console.log(playerChannels[player]);
     try {
       const playerChannel = await interaction.guild.channels.fetch(
         playerChannels[player].channelId,
