@@ -25,6 +25,14 @@ async function execute(interaction, user) {
       ephemeral: true,
     });
   }
+  const gameChannels = await gameInfo.get('game_channels');
+
+  if (!interaction.channel.id === gameChannels['general'].channelId) {
+    return interaction.reply({
+      content: 'This command cannot be used in the game chat.',
+      ephemeral: true,
+    });
+  }
 
   const targetKithee = interaction.options.getUser(`kithee`).id;
 
