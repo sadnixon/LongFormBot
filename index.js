@@ -175,6 +175,9 @@ async function initializeData() {
   if (!(await gameInfo.has('kisses'))) {
     await gameInfo.set('kisses', {});
   }
+  if (!(await gameInfo.has('kithes'))) {
+    await gameInfo.set('kithes', {});
+  }
 }
 
 // -----------------------------------------------------------------------------
