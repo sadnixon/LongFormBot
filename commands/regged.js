@@ -1,6 +1,7 @@
 'use strict';
 
 const { SlashCommandBuilder } = require('discord.js');
+const { standardEmbed } = require('../message-helpers');
 
 const data = new SlashCommandBuilder()
   .setName('regged')
@@ -21,6 +22,23 @@ async function execute(interaction, user) {
       .join(', ')}`,
     ephemeral: false,
   });
+  for (const player of Object.keys(playerChannels)) {
+    try {
+      const playerChannel = await interaction.guild.channels.fetch(
+        playerChannels[player].channelId,
+      );
+      await playerChannel.send(
+        standardEmbed(
+          'Here it is!',
+          `This is <@${player}>'s channel for games.`,
+        ),
+      );
+    } catch (error) {
+      console.error('Failed to get all channels:', error);
+      process.exitCode = 1;
+      await interaction.channel.send(`Channel for <@${player}> doesn't exist!`);
+    }
+  }
 }
 
 module.exports = {
