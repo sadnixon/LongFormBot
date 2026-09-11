@@ -586,6 +586,29 @@ async function missionCompletion(client) {
     gameChannels['announcements'].channelId,
   );
 
+  //Handling conditional fails
+  const packSpyIds = gameState.players
+    .filter(
+      (e) => e.team === 'Spy' && !['Oberon', 'Guinevere'].includes(e.role),
+    )
+    .map((e) => e.id);
+
+  const packSpyResults = Object.values(
+    _.pick(gameState.missionSFs[gameState.missionIndex], packSpyIds),
+  );
+
+  if (
+    packSpyResults.filter((e) => e === 'fail').length === 0 &&
+    packSpyResults.filter((e) => e === 'conditional').length > 0
+  ) {
+    for (const id of gameState.passedMissions[gameState.missionIndex].team) {
+      if (gameState.missionSFs[gameState.missionIndex][id] === 'conditional') {
+        gameState.missionSFs[gameState.missionIndex][id] = 'fail';
+        break;
+      }
+    }
+  }
+
   const validOutcomes = _.pick(
     gameState.missionSFs[gameState.missionIndex],
     gameState.passedMissions[gameState.missionIndex].team,
@@ -785,6 +808,12 @@ async function endGame(client) {
   const heavenChannel = await guild.channels.fetch(
     gameChannels['heaven'].channelId,
   );
+  const spiesChannel = await guild.channels.fetch(
+    gameChannels['spies'].channelId,
+  );
+  const loversChannel = await guild.channels.fetch(
+    gameChannels['lovers'].channelId,
+  );
   const announceChannel = await guild.channels.fetch(
     gameChannels['announcements'].channelId,
   );
@@ -804,6 +833,16 @@ async function endGame(client) {
     await heavenChannel.permissionOverwrites.edit(id, {
       [PermissionFlagsBits.ViewChannel]: true,
       [PermissionFlagsBits.SendMessages]: true,
+      [PermissionFlagsBits.ReadMessageHistory]: true,
+    });
+    await spiesChannel.permissionOverwrites.edit(id, {
+      [PermissionFlagsBits.ViewChannel]: true,
+      [PermissionFlagsBits.SendMessages]: false,
+      [PermissionFlagsBits.ReadMessageHistory]: true,
+    });
+    await loversChannel.permissionOverwrites.edit(id, {
+      [PermissionFlagsBits.ViewChannel]: true,
+      [PermissionFlagsBits.SendMessages]: false,
       [PermissionFlagsBits.ReadMessageHistory]: true,
     });
   }
@@ -860,8 +899,12 @@ const shuffleArray = (array) => {
   return array;
 };
 
-const randomNumber = (max) => {
-  return Math.floor(Math.random() * (max + 1));
+//const randomNumber = (max) => {
+//  return Math.floor(Math.random() * (max + 1));
+//};
+
+const randomNumber = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
 const isUnique = (arr) => arr.length === new Set(arr).size;
@@ -870,6 +913,7 @@ module.exports = {
   errorMessage,
   standardEmbed,
   shuffleArray,
+  randomNumber,
   startGame,
   endGame,
   sendGameState,

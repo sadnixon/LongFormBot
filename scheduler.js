@@ -72,7 +72,15 @@ async function scheduleTask(type, data, executeAt) {
  */
 async function scheduleInXHours(type, data, hours) {
   const executeAt = Date.now() + hours * 60 * 60 * 1000;
-  //const executeAt = Date.now() + hours * 3 * 1000;
+
+  return scheduleTask(type, data, executeAt);
+}
+
+/**
+ * Schedule a task exactly X seconds from now.
+ */
+async function scheduleInXSeconds(type, data, seconds) {
+  const executeAt = Date.now() + seconds * 1000;
 
   return scheduleTask(type, data, executeAt);
 }
@@ -220,6 +228,7 @@ module.exports = {
   registerHandler,
   scheduleTask,
   scheduleInXHours,
+  scheduleInXSeconds,
   cancelTask,
   clearTasks,
   startScheduler,

@@ -11,8 +11,14 @@ const {
   sendGameState,
   sendVoteState,
   isUnique,
+  randomNumber,
 } = require('../message-helpers');
-const { clearTasks, scheduleInXHours, cancelTask } = require('../scheduler');
+const {
+  clearTasks,
+  scheduleInXHours,
+  scheduleInXSeconds,
+  cancelTask,
+} = require('../scheduler');
 
 const data = new SlashCommandBuilder()
   .setName('pick')
@@ -173,15 +179,28 @@ async function execute(interaction, user) {
       `${gameState.passedMissions[gameState.missionIndex].team.map((e) => `<@${e}>`).join(' ')}\nIt's time to run M${gameState.missionIndex + 1}! Go decide if the mission will succeed or fail with /mission.`,
     );
 
-    if (
-      gameState.passedMissions[gameState.missionIndex] &&
-      Object.keys(gameState.missionSFs[gameState.missionIndex]).filter((e) =>
-        gameState.passedMissions[gameState.missionIndex].team.includes(e),
-      ).length >= gameState.missionSizes[gameState.missionIndex]
-    ) {
+    //Final mission check
+    if (gameState.missionIndex === 6) {
+      for (let i = 0; i < gameState.players.length; i++) {
+        if (
+          gameState.players[i].team === 'Resistance' ||
+          gameState.players[i].role === 'Guinevere'
+        ) {
+          gameState.missionSFs[gameState.missionIndex][
+            gameState.players[i].id
+          ] = 'succeed';
+        } else {
+          gameState.missionSFs[gameState.missionIndex][
+            gameState.players[i].id
+          ] = 'fail';
+        }
+      }
+      await gameInfo.set('gameState', gameState);
       await missionCompletion(interaction.client);
     } else {
       await scheduleInXHours('end_mission', {}, 6);
+      const randomWait = randomNumber(300, 540);
+      await scheduleInXSeconds('wait_mission', {}, randomWait);
     }
   }
 }

@@ -58,6 +58,10 @@ const data = new SlashCommandBuilder()
           name: 'Fail',
           value: 'fail',
         },
+        {
+          name: 'Conditional Fail',
+          value: 'conditional',
+        },
       ),
   );
 
@@ -97,10 +101,18 @@ async function execute(interaction, user) {
   if (
     (gameState.players[playerIndex].team === 'Resistance' ||
       gameState.players[playerIndex].role === 'Guinevere') &&
-    targetOutcome === 'fail'
+    targetOutcome !== 'succeed'
   ) {
     return interaction.reply({
-      content: `You are a Resistance member, so you have to Succeed!`,
+      content: `You are a Resistance member (or Guinevere), so you have to Succeed!`,
+      ephemeral: true,
+    });
+  } else if (
+    gameState.players[playerIndex].role === 'Oberon' &&
+    targetOutcome === 'conditional'
+  ) {
+    return interaction.reply({
+      content: `You are Oberon, so you cannot conditionally fail.`,
       ephemeral: true,
     });
   }
@@ -114,14 +126,14 @@ async function execute(interaction, user) {
     ephemeral: false,
   });
 
-  if (
-    gameState.passedMissions[gameState.missionIndex] &&
-    Object.keys(gameState.missionSFs[gameState.missionIndex]).filter((e) =>
-      gameState.passedMissions[gameState.missionIndex].team.includes(e),
-    ).length >= gameState.missionSizes[gameState.missionIndex]
-  ) {
-    await missionCompletion(interaction.client);
-  }
+  //if (
+  //  gameState.passedMissions[gameState.missionIndex] &&
+  //  Object.keys(gameState.missionSFs[gameState.missionIndex]).filter((e) =>
+  //    gameState.passedMissions[gameState.missionIndex].team.includes(e),
+  //  ).length >= gameState.missionSizes[gameState.missionIndex]
+  //) {
+  //  await missionCompletion(interaction.client);
+  //}
 }
 
 module.exports = {

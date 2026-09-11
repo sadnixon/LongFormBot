@@ -7,10 +7,12 @@ const {
   missionCompletion,
   standardEmbed,
   endGame,
+  randomNumber,
 } = require('./message-helpers');
 const {
   registerHandler,
   scheduleInXHours,
+  scheduleInXSeconds,
   clearTasks,
 } = require('./scheduler');
 const _ = require('lodash');
@@ -19,6 +21,23 @@ let client;
 
 function initializeTaskHandlers(discordClient) {
   client = discordClient;
+
+  registerHandler('wait_mission', async (data) => {
+    const gameState = await gameInfo.get('gameState');
+    if (
+      gameState.passedMissions[gameState.missionIndex] &&
+      Object.keys(gameState.missionSFs[gameState.missionIndex]).filter((e) =>
+        gameState.passedMissions[gameState.missionIndex].team.includes(e),
+      ).length >= gameState.missionSizes[gameState.missionIndex]
+    ) {
+      await clearTasks();
+      await missionCompletion(client);
+    } else {
+      //removing from gameState the second timer
+      gameState.phaseTimers = gameState.phaseTimers.slice(0, -1);
+      await gameInfo.set('gameState', gameState);
+    }
+  });
 
   registerHandler('end_vote', async (data) => {
     const currentPlayers = await gameInfo.get('players');
@@ -81,15 +100,28 @@ function initializeTaskHandlers(discordClient) {
       `${gameState.passedMissions[gameState.missionIndex].team.map((e) => `<@${e}>`).join(' ')}\nIt's time to run M${gameState.missionIndex + 1}! Go decide if the mission will succeed or fail with /mission.`,
     );
 
-    if (
-      gameState.passedMissions[gameState.missionIndex] &&
-      Object.keys(gameState.missionSFs[gameState.missionIndex]).filter((e) =>
-        gameState.passedMissions[gameState.missionIndex].team.includes(e),
-      ).length >= gameState.missionSizes[gameState.missionIndex]
-    ) {
+    //Final mission check
+    if (gameState.missionIndex === 6) {
+      for (let i = 0; i < gameState.players.length; i++) {
+        if (
+          gameState.players[i].team === 'Resistance' ||
+          gameState.players[i].role === 'Guinevere'
+        ) {
+          gameState.missionSFs[gameState.missionIndex][
+            gameState.players[i].id
+          ] = 'succeed';
+        } else {
+          gameState.missionSFs[gameState.missionIndex][
+            gameState.players[i].id
+          ] = 'fail';
+        }
+      }
+      await gameInfo.set('gameState', gameState);
       await missionCompletion(client);
     } else {
       await scheduleInXHours('end_mission', {}, 6);
+      const randomWait = randomNumber(300, 540);
+      await scheduleInXSeconds('wait_mission', {}, randomWait);
     }
   });
 
@@ -246,15 +278,28 @@ function initializeTaskHandlers(discordClient) {
         `${gameState.passedMissions[gameState.missionIndex].team.map((e) => `<@${e}>`).join(' ')}\nIt's time to run M${gameState.missionIndex + 1}! Go decide if the mission will succeed or fail with /mission.`,
       );
 
-      if (
-        gameState.passedMissions[gameState.missionIndex] &&
-        Object.keys(gameState.missionSFs[gameState.missionIndex]).filter((e) =>
-          gameState.passedMissions[gameState.missionIndex].team.includes(e),
-        ).length >= gameState.missionSizes[gameState.missionIndex]
-      ) {
+      //Final mission check
+      if (gameState.missionIndex === 6) {
+        for (let i = 0; i < gameState.players.length; i++) {
+          if (
+            gameState.players[i].team === 'Resistance' ||
+            gameState.players[i].role === 'Guinevere'
+          ) {
+            gameState.missionSFs[gameState.missionIndex][
+              gameState.players[i].id
+            ] = 'succeed';
+          } else {
+            gameState.missionSFs[gameState.missionIndex][
+              gameState.players[i].id
+            ] = 'fail';
+          }
+        }
+        await gameInfo.set('gameState', gameState);
         await missionCompletion(client);
       } else {
         await scheduleInXHours('end_mission', {}, 6);
+        const randomWait = randomNumber(300, 540);
+        await scheduleInXSeconds('wait_mission', {}, randomWait);
       }
     }
   });
@@ -274,7 +319,6 @@ function initializeTaskHandlers(discordClient) {
     );
 
     if (gameState.currentState === 'adminPaused') {
-
       await genChannel.send(
         standardEmbed(
           'TIMER IGNORED',
