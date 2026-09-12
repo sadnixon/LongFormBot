@@ -17,7 +17,7 @@ const idChoice = (id) => {
 
 const data = new SlashCommandBuilder()
   .setName('testwitch')
-  .setDescription('Pick your assassination target')
+  .setDescription('Pick your Witch target')
   .addStringOption((option) =>
     option
       .setName('playerid')

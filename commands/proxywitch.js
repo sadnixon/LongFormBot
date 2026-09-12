@@ -10,7 +10,7 @@ const { standardEmbed, sendGameState, endGame } = require('../message-helpers');
 
 const data = new SlashCommandBuilder()
   .setName('proxywitch')
-  .setDescription('Pick your assassination target')
+  .setDescription('Pick your Witch target')
   .addUserOption((option) =>
     option
       .setName('user')
@@ -72,7 +72,7 @@ async function execute(interaction, user) {
     !currentPlayers.includes(userId) ||
     !(
       ['Mordred', 'Assassin', 'Morgana', 'Guinevere'].includes(
-        gameState.players[puppeteerIndex].role,
+        gameState.players[puppeteerIndex]?.role,
       ) || user.isAuthorized
     )
   ) {

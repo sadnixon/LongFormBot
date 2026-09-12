@@ -10,7 +10,7 @@ const { standardEmbed, sendGameState, endGame } = require('../message-helpers');
 
 const data = new SlashCommandBuilder()
   .setName('witch')
-  .setDescription('Pick your assassination target')
+  .setDescription('Pick your Witch target')
   .addUserOption((option) =>
     option
       .setName('player')
