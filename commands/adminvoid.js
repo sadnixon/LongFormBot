@@ -39,6 +39,10 @@ const data = new SlashCommandBuilder()
           name: 'Back To Ready',
           value: 'back',
         },
+        {
+          name: 'Special',
+          value: 'special',
+        },
       ),
   );
 
@@ -82,6 +86,17 @@ async function execute(interaction, user) {
     await schedDB.clear();
     const gameState = await gameInfo.get('gameState');
     gameState.phaseTimers = [];
+    await gameInfo.set('gameState', gameState);
+  } else if (voidType === 'special') {
+    const gameState = await gameInfo.get('gameState');
+    gameState.witchCurses = {
+      '1302164824775462912': {
+        id: '1302164824775462912',
+        role: 'lover',
+        triggered: true,
+        index: 0,
+      },
+    };
     await gameInfo.set('gameState', gameState);
   }
 

@@ -108,7 +108,7 @@ async function execute(interaction, user) {
     (Object.keys(gameState.witchCurses).length === 1 &&
       ((Object.values(gameState.witchCurses)[0].role === targetRole &&
         targetRole === 'percival') ||
-        targetPlayer in gameState.witchCurses))
+        targetPlayer.id in gameState.witchCurses))
   ) {
     return interaction.reply({
       content: `This is not a valid witch guess! You must choose a non-spy player in the current game (you cannot guess the same player twice, or the same role twice, or guess more than twice).`,

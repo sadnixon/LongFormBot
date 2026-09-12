@@ -13,10 +13,10 @@ const data = new SlashCommandBuilder()
   .setDescription('Undo your last Witch guess')
   .addUserOption((option) =>
     option
-      .setName('player')
-      .setDescription('The player who you want to witch guess')
+      .setName('user')
+      .setDescription('The player you are acting for')
       .setRequired(true),
-  );
+  )
 
 async function execute(interaction, user) {
   const userId = interaction.options.getUser(`user`).id;
