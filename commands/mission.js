@@ -94,14 +94,15 @@ async function execute(interaction, user) {
     ephemeral: false,
   });
 
-  //if (
-  //  gameState.passedMissions[gameState.missionIndex] &&
-  //  Object.keys(gameState.missionSFs[gameState.missionIndex]).filter((e) =>
-  //    gameState.passedMissions[gameState.missionIndex].team.includes(e),
-  //  ).length >= gameState.missionSizes[gameState.missionIndex]
-  //) {
-  //  await missionCompletion(interaction.client);
-  //}
+  if (
+    gameState.passedMissions[gameState.missionIndex] &&
+    Object.keys(gameState.missionSFs[gameState.missionIndex]).filter((e) =>
+      gameState.passedMissions[gameState.missionIndex].team.includes(e),
+    ).length >= gameState.missionSizes[gameState.missionIndex] &&
+    gameState.phaseTimers.length !== 2
+  ) {
+    await missionCompletion(interaction.client);
+  }
 }
 
 module.exports = {
