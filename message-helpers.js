@@ -14,12 +14,12 @@ const errorMessage = (message) => {
 };
 
 const colorMap = {
-  resistance: '#0087d6',
-  spy: '#fc4141',
-  neutral: '#7f7f7f',
+  Resistance: '#0087d6',
+  Spy: '#fc4141',
+  Neutral: '#7f7f7f',
 };
 
-const standardEmbed = (header, message, team = 'neutral') => {
+const standardEmbed = (header, message, team = 'Neutral') => {
   return {
     embeds: [
       new EmbedBuilder()
@@ -51,11 +51,13 @@ async function startGame(interaction) {
     'Mordred',
     'Witch',
   ];
-
   if (player_num > 13) {
     roles.push('Resistance');
   }
-  if (player_num > 14) {
+  if (player_num > 15) {
+    roles.push('Resistance');
+    roles.push('Spy');
+  } else if (player_num > 14) {
     roles.push('Guinevere');
   }
 
@@ -67,10 +69,12 @@ async function startGame(interaction) {
   //const refIndex = randomNumber(player_num);
   const refIndex = player_num - 1;
   const visibleSpies = shuffledPlayers.filter((e, i) =>
-    ['Morgana', 'Assassin', 'Oberon', 'Witch'].includes(shuffledRoles[i]),
+    ['Morgana', 'Assassin', 'Oberon', 'Witch', 'Spy'].includes(
+      shuffledRoles[i],
+    ),
   );
   const knownSpies = shuffledPlayers.filter((e, i) =>
-    ['Morgana', 'Assassin', 'Mordred', 'Witch', 'Guinevere'].includes(
+    ['Morgana', 'Assassin', 'Mordred', 'Witch', 'Guinevere', 'Spy'].includes(
       shuffledRoles[i],
     ),
   );
@@ -122,7 +126,12 @@ async function startGame(interaction) {
     });
   }
 
-  for (const channel of [genChannel, picksChannel, paragraphsChannel, nongameChannel]) {
+  for (const channel of [
+    genChannel,
+    picksChannel,
+    paragraphsChannel,
+    nongameChannel,
+  ]) {
     await channel.permissionOverwrites.set([
       {
         id: interaction.guild.roles.everyone.id,
@@ -234,7 +243,7 @@ async function startGame(interaction) {
       `**<@${shuffledPlayers[i]}>, you are ${shuffledRoles[i]}!**\n\nUse /sawrole to acknowledge that you have viewed your role and gain access to the public chats.`,
     );
     if (
-      ['Morgana', 'Assassin', 'Mordred', 'Witch', 'Guinevere'].includes(
+      ['Morgana', 'Assassin', 'Mordred', 'Witch', 'Guinevere', 'Spy'].includes(
         shuffledRoles[i],
       )
     ) {
@@ -259,6 +268,7 @@ async function startGame(interaction) {
         standardEmbed(
           'Your co-Spies, the Minions of Mordred, stand assembled:',
           `${knownSpies.map((e) => `<@${e}>`).join(', ')}\nYour last ally, Oberon the King of Fairies, didn't make it to the meeting.`,
+          'Spy',
         ),
       );
     } else if (['Tristan', 'Isolde'].includes(shuffledRoles[i])) {
@@ -278,6 +288,7 @@ async function startGame(interaction) {
           standardEmbed(
             'Your beautiful Irish princess is:',
             `<@${shuffledPlayers[shuffledRoles.indexOf('Isolde')]}>`,
+            'Resistance',
           ),
         );
       } else {
@@ -285,6 +296,7 @@ async function startGame(interaction) {
           standardEmbed(
             'Your heroic Cornish knight is:',
             `<@${shuffledPlayers[shuffledRoles.indexOf('Tristan')]}>`,
+            'Resistance',
           ),
         );
       }
@@ -293,6 +305,7 @@ async function startGame(interaction) {
         standardEmbed(
           'You ponder your orb and see the following Spies, the Minions of Mordred:',
           `${visibleSpies.map((e) => `<@${e}>`).join(', ')}\nHowever, Mordred himself is invisible to you.${shuffledRoles.includes('Guinevere') ? ' Guinevere is also invisible.' : ''}`,
+          'Resistance',
         ),
       );
     } else if (shuffledRoles[i] === 'Percival') {
@@ -300,6 +313,7 @@ async function startGame(interaction) {
         standardEmbed(
           'The evil enchantress Morgana cast a spell on herself and the honorable Merlin; you do not know which is which:',
           merlinOptions.map((e) => `<@${e}>`).join(', '),
+          'Resistance',
         ),
       );
     }
@@ -423,7 +437,7 @@ async function sendGameState(
 
   let waitingOnIds;
 
-  if (['pickWait','pickWaitSupermaj'].includes(gameState.currentState)) {
+  if (['pickWait', 'pickWaitSupermaj'].includes(gameState.currentState)) {
     waitingOnIds = gameState.missionPickers[gameState.missionIndex];
   } else if (gameState.currentState === 'voteWait') {
     waitingOnIds = gameState.players
@@ -494,9 +508,12 @@ async function sendGameState(
     )
     .join('\n');
 
+  const embedColor = reveal && winner !== 'none' ? winner : 'Neutral';
+
   const embed = standardEmbed(
     'Current Game State:',
     `${gameState.players.map((e, i) => `${i + 1}. ${playerHist(e.id)}<@${e.id}> ${pCrowns[i]}${pRef[i]}${reveal ? `**(${e.role})**` : ''}`).join('\n')}\n**Ref Chain:** ${gameState.refChain.map((e) => `<@${e}>${e in gameState.refClaims ? ` (${gameState.refClaims[e][0].toUpperCase()})` : ''}`).join('-> ')}\n\n**Missions:**\n${missionSection}\n\n${witchHistory}**Waiting on:** ${waitingOnIds.map((e) => `<@${e}>`).join(', ')}\n\n**State:** ${gameState.currentState}${gameState.phaseTimers.length > 0 ? `\nPhase Ends <t:${Math.floor(gameState.phaseTimers[0].timeStamp / 1000)}:R>` : ''}`,
+    embedColor
   );
 
   await channel.send(embed);

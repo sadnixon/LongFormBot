@@ -479,9 +479,7 @@ function initializeTaskHandlers(discordClient) {
     gameState.phaseTimers = [];
 
     const possibleTargets = gameState.players
-      .filter(
-        (e) => !['Assassin', 'Morgana', 'Mordred', 'Witch'].includes(e.role),
-      )
+      .filter((e) => e.team !== 'Spy')
       .map((e) => e.id);
 
     const targetPlayer = shuffleArray(possibleTargets)[0];

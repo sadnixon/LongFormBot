@@ -235,10 +235,10 @@ async function execute(interaction, user) {
   );
 
   const visibleSpies = gameState.players
-    .filter((e) => ['Morgana', 'Assassin', 'Oberon', 'Witch'].includes(e.role))
+    .filter((e) => ['Morgana', 'Assassin', 'Oberon', 'Witch','Spy'].includes(e.role))
     .map((e) => e.id);
   const knownSpies = gameState.players
-    .filter((e) => ['Morgana', 'Assassin', 'Mordred', 'Witch', 'Guinevere'].includes(e.role))
+    .filter((e) => ['Morgana', 'Assassin', 'Mordred', 'Witch', 'Guinevere','Spy'].includes(e.role))
     .map((e) => e.id);
   const merlinOptions = gameState.players
     .filter((e) => ['Merlin', 'Morgana'].includes(e.role))
@@ -247,7 +247,7 @@ async function execute(interaction, user) {
   const tristanId = gameState.players.filter((e) => e.role === 'Tristan')[0].id;
 
   if (
-    ['Morgana', 'Assassin', 'Mordred', 'Witch', 'Guinevere'].includes(
+    ['Morgana', 'Assassin', 'Mordred', 'Witch', 'Guinevere','Spy'].includes(
       gameState.players[playerIndex].role,
     )
   ) {

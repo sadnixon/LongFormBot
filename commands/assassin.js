@@ -66,13 +66,8 @@ async function execute(interaction, user) {
   if (
     !currentPlayers.includes(targetPlayer.id) ||
     (targetPlayer2 && !currentPlayers.includes(targetPlayer2.id)) ||
-    ['Assassin', 'Morgana', 'Mordred', 'Witch', 'Guinevere', 'Oberon'].includes(
-      gameState.players[targetPlayerIndex].role,
-    ) ||
-    (targetPlayer2 &&
-      ['Assassin', 'Morgana', 'Mordred', 'Witch', 'Guinevere', 'Oberon'].includes(
-        gameState.players[targetPlayer2Index].role,
-      ))
+    gameState.players[targetPlayerIndex]?.team === 'Spy' ||
+    (targetPlayer2 && gameState.players[targetPlayer2Index]?.team === 'Spy')
   ) {
     return interaction.reply({
       content: `This is not a valid assassination! You must choose a non-spy player in the current game (or two non-spy players, if you are shooting for Lovers).`,

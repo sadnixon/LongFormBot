@@ -61,10 +61,10 @@ async function execute(interaction, user) {
   if (
     !currentPlayers.includes(userId) ||
     !(
-      (['Mordred', 'Witch', 'Morgana', 'Assassin', 'Guinevere'].includes(
+      (['Mordred', 'Witch', 'Morgana', 'Assassin', 'Guinevere','Spy'].includes(
         gameState.players[puppeteerIndex]?.role,
       ) &&
-        ['Mordred', 'Witch', 'Morgana', 'Assassin', 'Guinevere'].includes(
+        ['Mordred', 'Witch', 'Morgana', 'Assassin', 'Guinevere','Spy'].includes(
           gameState.players[playerIndex]?.role,
         )) ||
       user.isAuthorized

@@ -100,7 +100,7 @@ async function execute(interaction, user) {
 
   if (
     !currentPlayers.includes(targetPlayer) ||
-    ['Assassin', 'Morgana', 'Mordred', 'Witch'].includes(
+    ['Assassin', 'Morgana', 'Mordred', 'Witch','Spy'].includes(
       gameState.players[targetPlayerIndex].role,
     ) ||
     (gameState.witchResults.length > 0 && gameState.witchResults[0].success) ||

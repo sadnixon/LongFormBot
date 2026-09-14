@@ -28,7 +28,7 @@ async function execute(interaction, user) {
   const gameOngoing = await gameInfo.get('inPlay');
   const gameReadying = await gameInfo.get('inReady');
   const currentPlayers = (await gameInfo.get('players')) ?? [];
-  if (gameOngoing || gameReadying || currentPlayers.length >= 15) {
+  if (gameOngoing || gameReadying || currentPlayers.length >= 16) {
     await interaction.reply({
       content: `The game is ongoing/full, nobody can join!`,
       ephemeral: true,
@@ -48,14 +48,14 @@ async function execute(interaction, user) {
 
     await gameInfo.set('players', currentPlayers);
     await genChannel.send(
-      `<@${interaction.user.id}> has now joined the lobby! Player count is at ${currentPlayers.length}/15.`,
-    );
+      `<@${interaction.user.id}> has now joined the lobby! Player count is at ${currentPlayers.length}/16.`,
+    )
     await interaction.reply({
       content: `You have joined the lobby!`,
       ephemeral: true,
     });
 
-    if (currentPlayers.length === 15) {
+    if (currentPlayers.length === 16) {
       await gameInfo.set('inReady', true);
 
       await genChannel.send(
