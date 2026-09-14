@@ -52,7 +52,7 @@ async function execute(interaction, user) {
   const currentPlayers = await gameInfo.get('players');
   if (
     !gameOngoing ||
-    !['pickWait', 'missionWait', 'voteWait'].includes(gameState.currentState) ||
+    !['pickWait','pickWaitSupermaj', 'missionWait', 'voteWait'].includes(gameState.currentState) ||
     !currentPlayers.includes(interaction.user.id)
   ) {
     return interaction.reply({

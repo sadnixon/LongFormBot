@@ -51,7 +51,7 @@ async function execute(interaction, user) {
   await clearTasks();
   gameState = await gameInfo.get('gameState');
   gameState.refChain.push(targetPlayer);
-  gameState.currentState = 'pickWait';
+  gameState.currentState = 'pickWaitSupermaj';
   const nextUpIndex =
     gameState.players
       .map((e) => e.id)
@@ -102,7 +102,7 @@ async function execute(interaction, user) {
   await genChannel.send(
     `${gameState.missionPickers[gameState.missionIndex].map((e) => `<@${e}>`).join(', ')}, it is time to pick a mission using /pick.`,
   );
-  await scheduleInXHours('end_pick', {}, 16);
+  await scheduleInXHours('end_supermaj', {}, 6);
   await scheduleInXHours('end_vote', {}, 18);
 }
 

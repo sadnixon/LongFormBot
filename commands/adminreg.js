@@ -22,8 +22,12 @@ const data = new SlashCommandBuilder()
           value: 'nongame',
         },
         {
-          name: 'Picks/Paragraphs',
+          name: 'Picks',
           value: 'picks',
+        },
+        {
+          name: 'Paragraphs',
+          value: 'paragraphs',
         },
         {
           name: 'Announcements',

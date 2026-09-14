@@ -176,6 +176,9 @@ async function execute(interaction, user) {
   const picksChannel = await interaction.guild.channels.fetch(
     gameChannels['picks'].channelId,
   );
+  const paragraphsChannel = await interaction.guild.channels.fetch(
+    gameChannels['paragraphs'].channelId,
+  );
   const loversChannel = await interaction.guild.channels.fetch(
     gameChannels['lovers'].channelId,
   );
@@ -193,6 +196,11 @@ async function execute(interaction, user) {
     [PermissionFlagsBits.SendMessages]: true,
     [PermissionFlagsBits.ReadMessageHistory]: true,
   });
+  await paragraphsChannel.permissionOverwrites.edit(inUser, {
+    [PermissionFlagsBits.ViewChannel]: true,
+    [PermissionFlagsBits.SendMessages]: true,
+    [PermissionFlagsBits.ReadMessageHistory]: true,
+  });
   await nongameChannel.permissionOverwrites.edit(inUser, {
     [PermissionFlagsBits.ViewChannel]: true,
     [PermissionFlagsBits.SendMessages]: true,
@@ -206,6 +214,9 @@ async function execute(interaction, user) {
     [PermissionFlagsBits.SendMessages]: false,
   });
   await picksChannel.permissionOverwrites.edit(outUser, {
+    [PermissionFlagsBits.SendMessages]: false,
+  });
+  await paragraphsChannel.permissionOverwrites.edit(outUser, {
     [PermissionFlagsBits.SendMessages]: false,
   });
   await loversChannel.permissionOverwrites.edit(outUser, {

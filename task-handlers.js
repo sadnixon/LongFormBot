@@ -22,6 +22,79 @@ let client;
 function initializeTaskHandlers(discordClient) {
   client = discordClient;
 
+  registerHandler('end_supermaj', async (data) => {
+    const gameState = await gameInfo.get('gameState');
+
+    const gameChannels = await gameInfo.get('game_channels');
+    const pickChannel = await guild.channels.fetch(
+      gameChannels['picks'].channelId,
+    );
+
+    let mostVotes = 0;
+    let mostVotesMission;
+    for (const mission of gameState.missionPickers[gameState.missionIndex]) {
+      const voteCount = gameState.missionVotes[gameState.missionIndex].filter(
+        (e) => e === mission,
+      ).length;
+      if (voteCount > mostVotes) {
+        mostVotes = voteCount;
+        mostVotesMission = mission;
+      }
+    }
+
+    const voteMaj = Math.floor(gameState.players.length / 2) + 1;
+
+    if (
+      mostVotes >= voteMaj &&
+      mostVotesMission in gameState.missionPicks[gameState.missionIndex]
+    ) {
+      await clearTasks();
+      const gameState = await gameInfo.get('gameState');
+      gameState.currentState = 'missionWait';
+      gameState.passedMissions.push(
+        gameState.missionPicks[gameState.missionIndex][mostVotesMission],
+      );
+      await gameInfo.set('gameState', gameState);
+      await pickChannel.send(
+        `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe mission chosen by <@${mostVotesMission}> has passed!`,
+      );
+      await sendGameState(client);
+      await genChannel.send(
+        `${gameState.passedMissions[gameState.missionIndex].team.map((e) => `<@${e}>`).join(' ')}\nIt's time to run M${gameState.missionIndex + 1}! Go decide if the mission will succeed or fail with /mission.`,
+      );
+
+      //Final mission check
+      if (gameState.missionIndex === 6) {
+        for (let i = 0; i < gameState.players.length; i++) {
+          if (
+            gameState.players[i].team === 'Resistance' ||
+            gameState.players[i].role === 'Guinevere'
+          ) {
+            gameState.missionSFs[gameState.missionIndex][
+              gameState.players[i].id
+            ] = 'succeed';
+          } else {
+            gameState.missionSFs[gameState.missionIndex][
+              gameState.players[i].id
+            ] = 'fail';
+          }
+        }
+        await gameInfo.set('gameState', gameState);
+        await missionCompletion(client);
+      } else {
+        await scheduleInXHours('end_mission', {}, 6);
+        const randomWait = randomNumber(300, 540);
+        await scheduleInXSeconds('wait_mission', {}, randomWait);
+      }
+    } else {
+      gameState.currentState = 'pickWait';
+      await gameInfo.set('gameState', gameState);
+      await clearTasks();
+      await scheduleInXHours('end_pick', {}, 10);
+      await scheduleInXHours('end_vote', {}, 12);
+    }
+  });
+
   registerHandler('wait_mission', async (data) => {
     const gameState = await gameInfo.get('gameState');
     if (
@@ -260,7 +333,7 @@ function initializeTaskHandlers(discordClient) {
       }
     }
 
-    const voteMaj = gameState.players.length === 13 ? 7 : 8;
+    const voteMaj = Math.floor(gameState.players.length / 2) + 1;
 
     if (mostVotes >= voteMaj) {
       await clearTasks();
@@ -335,7 +408,7 @@ function initializeTaskHandlers(discordClient) {
     )[0];
 
     gameState.refChain.push(targetPlayer);
-    gameState.currentState = 'pickWait';
+    gameState.currentState = 'pickWaitSupermaj';
     const nextUpIndex =
       gameState.players
         .map((e) => e.id)
@@ -375,7 +448,7 @@ function initializeTaskHandlers(discordClient) {
     await genChannel.send(
       `${gameState.missionPickers[gameState.missionIndex].map((e) => `<@${e}>`).join(', ')}, it is time to pick a mission using /pick.`,
     );
-    await scheduleInXHours('end_pick', {}, 16);
+    await scheduleInXHours('end_supermaj', {}, 6);
     await scheduleInXHours('end_vote', {}, 18);
   });
 

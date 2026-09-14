@@ -48,6 +48,9 @@ async function execute(interaction, user) {
   const picksChannel = await interaction.guild.channels.fetch(
     gameChannels['picks'].channelId,
   );
+  const paragraphsChannel = await interaction.guild.channels.fetch(
+    gameChannels['paragraphs'].channelId,
+  );
   const heavenChannel = await interaction.guild.channels.fetch(
     gameChannels['heaven'].channelId,
   );
@@ -62,6 +65,9 @@ async function execute(interaction, user) {
     [PermissionFlagsBits.SendMessages]: false,
   });
   await picksChannel.permissionOverwrites.edit(interaction.user.id, {
+    [PermissionFlagsBits.SendMessages]: false,
+  });
+  await paragraphsChannel.permissionOverwrites.edit(interaction.user.id, {
     [PermissionFlagsBits.SendMessages]: false,
   });
   await heavenChannel.permissionOverwrites.edit(interaction.user.id, {

@@ -123,7 +123,7 @@ async function execute(interaction, user) {
   const gameState = await gameInfo.get('gameState');
   if (
     !gameOngoing ||
-    gameState.currentState !== 'pickWait' ||
+    !['pickWait', 'pickWaitSupermaj'].includes(gameState.currentState) ||
     !gameState.missionPickers[gameState.missionIndex].includes(userId)
   ) {
     return interaction.reply({
@@ -188,7 +188,10 @@ async function execute(interaction, user) {
     ephemeral: true,
   });
 
-  const voteMaj = gameState.players.length === 13 ? 7 : 8;
+  const voteMaj =
+    gameState.currentState === 'pickWaitSupermaj'
+      ? Math.ceil((gameState.players.length * 2) / 3)
+      : Math.floor(gameState.players.length / 2) + 1;
 
   if (
     gameState.missionVotes[gameState.missionIndex].filter((e) => e === userId)

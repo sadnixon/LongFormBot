@@ -1,0 +1,73 @@
+'use strict';
+
+const {
+  SlashCommandBuilder,
+  ChannelType,
+  PermissionFlagsBits,
+} = require('discord.js');
+
+const { standardEmbed } = require('../message-helpers');
+
+const data = new SlashCommandBuilder()
+  .setName('sawrole')
+  .setDescription('Acknowledge viewing of role');
+
+async function execute(interaction, user) {
+  const playerChannels = await gameInfo.get('player_channels');
+  const playerChannelId = playerChannels[interaction.user.id].channelId;
+  if (!interaction.guildId || interaction.channel.id !== playerChannelId) {
+    return interaction.reply({
+      content: "This command can only be used in a player's private channel.",
+      ephemeral: true,
+    });
+  }
+
+  const gameOngoing = await gameInfo.get('inPlay');
+  const seenRolePlayers = await gameInfo.get('seenRolePlayers');
+  const currentPlayers = await gameInfo.get('players');
+  if (
+    !gameOngoing ||
+    !currentPlayers.includes(interaction.user.id) ||
+    seenRolePlayers.includes(interaction.user.id)
+  ) {
+    await interaction.reply({
+      content: `It's not time for you to acknowledge that you saw your role!`,
+      ephemeral: true,
+    });
+    return;
+  }
+
+  seenRolePlayers.push(interaction.user.id);
+  await gameInfo.set('seenRolePlayers', seenRolePlayers);
+
+  await interaction.reply({
+    content: `Thanks for looking at your role! You now have access to the public channels.`,
+    ephemeral: false,
+  });
+
+  const gameChannels = await gameInfo.get('game_channels');
+  const genChannel = await interaction.guild.channels.fetch(
+    gameChannels['general'].channelId,
+  );
+  const picksChannel = await interaction.guild.channels.fetch(
+    gameChannels['picks'].channelId,
+  );
+  const paragraphsChannel = await interaction.guild.channels.fetch(
+    gameChannels['paragraphs'].channelId,
+  );
+
+  await genChannel.permissionOverwrites.edit(interaction.user.id, {
+    [PermissionFlagsBits.SendMessages]: true,
+  });
+  await picksChannel.permissionOverwrites.edit(interaction.user.id, {
+    [PermissionFlagsBits.SendMessages]: true,
+  });
+  await paragraphsChannel.permissionOverwrites.edit(interaction.user.id, {
+    [PermissionFlagsBits.SendMessages]: true,
+  });
+}
+
+module.exports = {
+  data,
+  execute,
+};

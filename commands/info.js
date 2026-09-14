@@ -34,6 +34,11 @@ async function execute(interaction, user) {
           "Register a channel as your private channel for games",
       },
       {
+        name: '/sawrole',
+        value:
+          "Acknowledge that you saw your role at the start of the game",
+      },
+      {
         name: '/pick',
         value:
           "Pick players to go on your mission",
@@ -67,6 +72,11 @@ async function execute(interaction, user) {
         name: '/witch',
         value:
           "Pick a player to Witch guess",
+      },
+      {
+        name: '/unwitch',
+        value:
+          "Undo the last Witch guess",
       },
       {
         name: '/assassin',

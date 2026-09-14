@@ -14,10 +14,9 @@ const errorMessage = (message) => {
 };
 
 const colorMap = {
-  fascist: '#D66C4D',
-  liberal: '#64A6B8',
-  neutral: '#EAE6B1',
-  communist: '#B1342D',
+  resistance: '#0087d6',
+  spy: '#fc4141',
+  neutral: '#7f7f7f',
 };
 
 const standardEmbed = (header, message, team = 'neutral') => {
@@ -81,6 +80,7 @@ async function startGame(interaction) {
 
   let genChannel;
   let picksChannel;
+  let paragraphsChannel;
   let loversChannel;
   let spiesChannel;
   let heavenChannel;
@@ -93,6 +93,9 @@ async function startGame(interaction) {
     );
     picksChannel = await interaction.guild.channels.fetch(
       gameChannels['picks'].channelId,
+    );
+    paragraphsChannel = await interaction.guild.channels.fetch(
+      gameChannels['paragraphs'].channelId,
     );
     loversChannel = await interaction.guild.channels.fetch(
       gameChannels['lovers'].channelId,
@@ -119,7 +122,7 @@ async function startGame(interaction) {
     });
   }
 
-  for (const channel of [genChannel, picksChannel, nongameChannel]) {
+  for (const channel of [genChannel, picksChannel, paragraphsChannel, nongameChannel]) {
     await channel.permissionOverwrites.set([
       {
         id: interaction.guild.roles.everyone.id,
@@ -189,12 +192,17 @@ async function startGame(interaction) {
 
       await genChannel.permissionOverwrites.edit(shuffledPlayers[i], {
         [PermissionFlagsBits.ViewChannel]: true,
-        [PermissionFlagsBits.SendMessages]: true,
+        [PermissionFlagsBits.SendMessages]: false,
         [PermissionFlagsBits.ReadMessageHistory]: true,
       });
       await picksChannel.permissionOverwrites.edit(shuffledPlayers[i], {
         [PermissionFlagsBits.ViewChannel]: true,
-        [PermissionFlagsBits.SendMessages]: true,
+        [PermissionFlagsBits.SendMessages]: false,
+        [PermissionFlagsBits.ReadMessageHistory]: true,
+      });
+      await paragraphsChannel.permissionOverwrites.edit(shuffledPlayers[i], {
+        [PermissionFlagsBits.ViewChannel]: true,
+        [PermissionFlagsBits.SendMessages]: false,
         [PermissionFlagsBits.ReadMessageHistory]: true,
       });
       await nongameChannel.permissionOverwrites.edit(shuffledPlayers[i], {
@@ -223,7 +231,7 @@ async function startGame(interaction) {
     }
 
     await playerChannel.send(
-      `**<@${shuffledPlayers[i]}>, you are ${shuffledRoles[i]}!**`,
+      `**<@${shuffledPlayers[i]}>, you are ${shuffledRoles[i]}!**\n\nUse /sawrole to acknowledge that you have viewed your role and gain access to the public chats.`,
     );
     if (
       ['Morgana', 'Assassin', 'Mordred', 'Witch', 'Guinevere'].includes(
@@ -354,7 +362,7 @@ async function startGame(interaction) {
     witchResults: [],
     witchPunished: false,
     assassinShot: [],
-    currentState: 'pickWait',
+    currentState: 'pickWaitSupermaj',
     phaseTimers: [],
     pausedState: null,
   };
@@ -371,7 +379,7 @@ async function startGame(interaction) {
   await genChannel.send(
     `${startState.missionPickers[startState.missionIndex].map((e) => `<@${e}>`).join(', ')}, it is time to pick a mission using /pick.`,
   );
-  await scheduleInXHours('end_pick', {}, 16);
+  await scheduleInXHours('end_supermaj', {}, 6);
   await scheduleInXHours('end_vote', {}, 18);
 }
 
@@ -415,7 +423,7 @@ async function sendGameState(
 
   let waitingOnIds;
 
-  if (gameState.currentState === 'pickWait') {
+  if (['pickWait','pickWaitSupermaj'].includes(gameState.currentState)) {
     waitingOnIds = gameState.missionPickers[gameState.missionIndex];
   } else if (gameState.currentState === 'voteWait') {
     waitingOnIds = gameState.players
@@ -756,7 +764,7 @@ async function missionCompletion(client) {
     if (gameState.missionSuccs < 4) {
       gameState.missionIndex += 1;
       //Going straight to next phase case
-      gameState.currentState = 'pickWait';
+      gameState.currentState = 'pickWaitSupermaj';
       const nextUpIndex =
         gameState.players
           .map((e) => e.id)
@@ -774,7 +782,7 @@ async function missionCompletion(client) {
       await genChannel.send(
         `${gameState.missionPickers[gameState.missionIndex].map((e) => `<@${e}>`).join(', ')}, it is time to pick a mission using /pick.`,
       );
-      await scheduleInXHours('end_pick', {}, 16);
+      await scheduleInXHours('end_supermaj', {}, 6);
       await scheduleInXHours('end_vote', {}, 18);
     } else {
       //Going to assassination case
@@ -798,12 +806,14 @@ async function endGame(client) {
   const currentPlayers = await gameInfo.get('players');
 
   const gameChannels = await gameInfo.get('game_channels');
-  const playerChannels = await gameInfo.get('player_channels');
   const genChannel = await guild.channels.fetch(
     gameChannels['general'].channelId,
   );
   const picksChannel = await guild.channels.fetch(
     gameChannels['picks'].channelId,
+  );
+  const paragraphsChannel = await guild.channels.fetch(
+    gameChannels['paragraphs'].channelId,
   );
   const heavenChannel = await guild.channels.fetch(
     gameChannels['heaven'].channelId,
@@ -828,6 +838,9 @@ async function endGame(client) {
       [PermissionFlagsBits.SendMessages]: false,
     });
     await picksChannel.permissionOverwrites.edit(id, {
+      [PermissionFlagsBits.SendMessages]: false,
+    });
+    await paragraphsChannel.permissionOverwrites.edit(id, {
       [PermissionFlagsBits.SendMessages]: false,
     });
     await heavenChannel.permissionOverwrites.edit(id, {
