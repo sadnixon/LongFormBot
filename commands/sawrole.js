@@ -23,12 +23,12 @@ async function execute(interaction, user) {
   }
 
   const gameOngoing = await gameInfo.get('inPlay');
-  const seenRolePlayers = await gameInfo.get('seenRolePlayers');
+  const sawRolePlayers = await gameInfo.get('sawRolePlayers');
   const currentPlayers = await gameInfo.get('players');
   if (
     !gameOngoing ||
     !currentPlayers.includes(interaction.user.id) ||
-    seenRolePlayers.includes(interaction.user.id)
+    sawRolePlayers.includes(interaction.user.id)
   ) {
     await interaction.reply({
       content: `It's not time for you to acknowledge that you saw your role!`,
@@ -37,8 +37,8 @@ async function execute(interaction, user) {
     return;
   }
 
-  seenRolePlayers.push(interaction.user.id);
-  await gameInfo.set('seenRolePlayers', seenRolePlayers);
+  sawRolePlayers.push(interaction.user.id);
+  await gameInfo.set('sawRolePlayers', sawRolePlayers);
 
   await interaction.reply({
     content: `Thanks for looking at your role! You now have access to the public channels.`,

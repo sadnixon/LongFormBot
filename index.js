@@ -158,8 +158,8 @@ async function initializeData() {
     await gameInfo.set('readyPlayers', []);
   }
 
-  if (!(await gameInfo.has('seenRolePlayers'))) {
-    await gameInfo.set('seenRolePlayers', []);
+  if (!(await gameInfo.has('sawRolePlayers'))) {
+    await gameInfo.set('sawRolePlayers', []);
   }
 
   if (!(await gameInfo.has('player_channels'))) {
