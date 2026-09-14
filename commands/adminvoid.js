@@ -60,6 +60,7 @@ async function execute(interaction, user) {
   if (voidType === 'game') {
     await gameInfo.set('gameState', {});
     await gameInfo.set('players', []);
+    await gameInfo.set('sawRolePlayers',[]);
     await gameInfo.set('readyPlayers', []);
     await gameInfo.set('inPlay', false);
     await gameInfo.set('inReady', false);
@@ -71,6 +72,7 @@ async function execute(interaction, user) {
   } else if (voidType === 'signups') {
     await gameInfo.set('players', []);
     await gameInfo.set('readyPlayers', []);
+    await gameInfo.set('sawRolePlayers',[]);
     await gameInfo.set('inPlay', false);
     await gameInfo.set('inReady', false);
   } else if (voidType === 'ready') {
@@ -79,6 +81,7 @@ async function execute(interaction, user) {
   } else if (voidType === 'back') {
     await gameInfo.set('gameState', {});
     await gameInfo.set('readyPlayers', []);
+    await gameInfo.set('sawRolePlayers',[]);
     await gameInfo.set('inPlay', false);
     await gameInfo.set('inReady', true);
     await schedDB.clear();

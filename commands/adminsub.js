@@ -315,6 +315,7 @@ async function execute(interaction, user) {
 
   await gameInfo.set('gameState', gameState);
   await gameInfo.set('players', currentPlayers);
+  await gameInfo.set('sawRolePlayers', currentPlayers);
 
   await interaction.reply({
     content: `<@${outUser}> has been subbed out and replaced with <@${inUser}>!`,

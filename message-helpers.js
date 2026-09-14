@@ -898,6 +898,7 @@ async function endGame(client) {
   await gameHistory.set(gameState.gameId, gameState);
   await gameInfo.set('inPlay', false);
   await gameInfo.set('players', []);
+  await gameInfo.set('sawRolePlayers', []);
   await sendGameState(client, 'general', true, winningTeam);
   await sendGameState(client, 'announce', true, winningTeam);
 }
