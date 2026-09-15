@@ -48,15 +48,16 @@ const data = new SlashCommandBuilder()
   );
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   if (!user.isAuthorized) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'ADMIN ONLY COMMAND',
       ephemeral: true,
     });
   }
   const userId = interaction.options.getString('playerid');
   if (!interaction.guildId) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command can only be used in a server.',
       ephemeral: true,
     });
@@ -69,7 +70,7 @@ async function execute(interaction, user) {
     gameState.currentState !== 'refWait' ||
     gameState.refChain.at(-1) !== userId
   ) {
-    return interaction.reply({
+    return interaction.editReply({
       content: `It's not time for you to play the Ref of the Rain!`,
       ephemeral: true,
     });
@@ -77,7 +78,7 @@ async function execute(interaction, user) {
 
   const targetPlayer = interaction.options.getString(`player`);
   if (gameState.refChain.includes(targetPlayer)) {
-    return interaction.reply({
+    return interaction.editReply({
       content: `This is not a valid player to use Ref of the Rain on! You must choose a player in the game who is not already in the Ref chain!`,
       ephemeral: true,
     });
@@ -99,7 +100,7 @@ async function execute(interaction, user) {
   }
 
   await gameInfo.set('gameState', gameState);
-  await interaction.reply({
+  await interaction.editReply({
     content: `You made a Ref of the Rain pick!`,
     ephemeral: true,
   });

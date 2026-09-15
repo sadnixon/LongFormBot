@@ -119,11 +119,9 @@ async function startGame(interaction) {
   } catch (error) {
     console.error('Failed to get all channels:', error);
     process.exitCode = 1;
-    return interaction.reply({
-      content:
-        'Game cannot start, some of the required game channels are missing!',
-      ephemeral: false,
-    });
+    return interaction.channel.send(
+      'Game cannot start, some of the required game channels are missing!',
+    );
   }
 
   for (const channel of [
@@ -233,10 +231,9 @@ async function startGame(interaction) {
     } catch (error) {
       console.error('Failed to get all channels:', error);
       process.exitCode = 1;
-      return interaction.reply({
-        content: `Game cannot start, the required game channel from <${shuffledPlayers[i]}>!`,
-        ephemeral: false,
-      });
+      return interaction.channel.send(
+        `Game cannot start, the required game channel from <${shuffledPlayers[i]}> is missing!`,
+      );
     }
 
     await playerChannel.send(
@@ -513,7 +510,7 @@ async function sendGameState(
   const embed = standardEmbed(
     'Current Game State:',
     `${gameState.players.map((e, i) => `${i + 1}. ${playerHist(e.id)}<@${e.id}> ${pCrowns[i]}${pRef[i]}${reveal ? `**(${e.role})**` : ''}`).join('\n')}\n**Ref Chain:** ${gameState.refChain.map((e) => `<@${e}>${e in gameState.refClaims ? ` (${gameState.refClaims[e][0].toUpperCase()})` : ''}`).join('-> ')}\n\n**Missions:**\n${missionSection}\n\n${witchHistory}**Waiting on:** ${waitingOnIds.map((e) => `<@${e}>`).join(', ')}\n\n**State:** ${gameState.currentState}${gameState.phaseTimers.length > 0 ? `\nPhase Ends <t:${Math.floor(gameState.phaseTimers[0].timeStamp / 1000)}:R>` : ''}`,
-    embedColor
+    embedColor,
   );
 
   await channel.send(embed);

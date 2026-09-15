@@ -25,10 +25,11 @@ const data = new SlashCommandBuilder()
   );
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   const userId = interaction.options.getUser(`user`).id;
 
   if (!interaction.guildId) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command can only be used in a server.',
       ephemeral: true,
     });
@@ -41,7 +42,7 @@ async function execute(interaction, user) {
     !['voteWait', 'pickWait','pickWaitSupermaj'].includes(gameState.currentState) ||
     !currentPlayers.includes(userId)
   ) {
-    return interaction.reply({
+    return interaction.editReply({
       content: `It's not time for you to unvote!`,
       ephemeral: true,
     });
@@ -64,7 +65,7 @@ async function execute(interaction, user) {
       user.isAuthorized
     )
   ) {
-    return interaction.reply({
+    return interaction.editReply({
       content: `You can't proxy act like that!`,
       ephemeral: true,
     });
@@ -85,7 +86,7 @@ async function execute(interaction, user) {
       `**<@${userId}> has unvoted!**`,
     ),
   );
-  await interaction.reply({
+  await interaction.editReply({
     content: `You unvoted!`,
     ephemeral: true,
   });

@@ -8,20 +8,24 @@ const data = new SlashCommandBuilder()
   .setDescription('See regged users');
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   // Only authorized users can authorize other users
   if (!user.isAuthorized) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'ADMIN ONLY COMMAND',
       ephemeral: true,
     });
   }
   const playerChannels = await gameInfo.get('player_channels');
-  await interaction.reply({
-    content: `**Users With /reg'd Channels:**\n\n${Object.keys(playerChannels)
+  await interaction.editReply({
+    content: `Here you go!`,
+    ephemeral: true,
+  });
+  await interaction.channel.send(
+    `**Users With /reg'd Channels:**\n\n${Object.keys(playerChannels)
       .map((e) => `<@${e}>`)
       .join(', ')}`,
-    ephemeral: false,
-  });
+  );
   for (const player of Object.keys(playerChannels)) {
     console.log(playerChannels[player]);
     try {

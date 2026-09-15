@@ -53,8 +53,9 @@ async function createPrivateChannel(guild, userDisplay, userId) {
 }
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   if (!interaction.guildId) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command can only be used in a server.',
       ephemeral: true,
     });
@@ -63,7 +64,7 @@ async function execute(interaction, user) {
   const gameReadying = await gameInfo.get('inReady');
   const currentPlayers = (await gameInfo.get('players')) ?? [];
   if (gameOngoing || gameReadying || currentPlayers.length >= 16) {
-    await interaction.reply({
+    await interaction.editReply({
       content: `The game is ongoing/full, nobody can join!`,
       ephemeral: true,
     });
@@ -88,7 +89,7 @@ async function execute(interaction, user) {
     await genChannel.send(
       `<@${newUser.id}> has now joined the lobby! Player count is at ${currentPlayers.length}/16.`,
     );
-    await interaction.reply({
+    await interaction.editReply({
       content: `You have joined the lobby!`,
       ephemeral: true,
     });
@@ -131,7 +132,7 @@ async function execute(interaction, user) {
       await gameInfo.set('player_channels', playerChannels);
     }
   } else {
-    await interaction.reply({
+    await interaction.editReply({
       content: `You can't add the lobby if you're already in it.`,
       ephemeral: true,
     });

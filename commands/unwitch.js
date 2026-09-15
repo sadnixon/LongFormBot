@@ -13,8 +13,9 @@ const data = new SlashCommandBuilder()
   .setDescription('Undo your last Witch guess');
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   if (!interaction.guildId) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command can only be used in a server.',
       ephemeral: true,
     });
@@ -35,7 +36,7 @@ async function execute(interaction, user) {
     gameState.missionFails > 2 ||
     untriggeredWitches.length === 0
   ) {
-    return interaction.reply({
+    return interaction.editReply({
       content: `It's not time for you to undo a witch guess!`,
       ephemeral: true,
     });
@@ -47,7 +48,7 @@ async function execute(interaction, user) {
 
   await gameInfo.set('gameState', gameState);
 
-  await interaction.reply({
+  await interaction.editReply({
     content: `You undid a witch guess!`,
     ephemeral: true,
   });

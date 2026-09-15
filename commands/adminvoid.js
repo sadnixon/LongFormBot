@@ -47,9 +47,10 @@ const data = new SlashCommandBuilder()
   );
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   // Only authorized users can authorize other users
   if (!user.isAuthorized) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'ADMIN ONLY COMMAND',
       ephemeral: true,
     });
@@ -103,7 +104,7 @@ async function execute(interaction, user) {
     await gameInfo.set('gameState', gameState);
   }
 
-  await interaction.reply({
+  await interaction.editReply({
     content: `${voidType.toUpperCase()} is now VOIDED.`,
     ephemeral: true,
   });

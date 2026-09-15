@@ -19,8 +19,9 @@ const data = new SlashCommandBuilder()
   .setDescription('Unpick your mission');
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   if (!interaction.guildId) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command can only be used in a server.',
       ephemeral: true,
     });
@@ -33,7 +34,7 @@ async function execute(interaction, user) {
     !['voteWait', 'pickWait','pickWaitSupermaj'].includes(gameState.currentState) ||
     !currentPlayers.includes(interaction.user.id)
   ) {
-    return interaction.reply({
+    return interaction.editReply({
       content: `It's not time for you to unvote!`,
       ephemeral: true,
     });
@@ -57,7 +58,7 @@ async function execute(interaction, user) {
       `**<@${interaction.user.id}> has unvoted!**`,
     ),
   );
-  await interaction.reply({
+  await interaction.editReply({
     content: `You unvoted!`,
     ephemeral: true,
   });

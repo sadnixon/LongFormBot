@@ -7,8 +7,9 @@ const data = new SlashCommandBuilder()
   .setDescription('Leave the Long Form game, if it is not ongoing');
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   if (!interaction.guildId) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command can only be used in a server.',
       ephemeral: true,
     });
@@ -17,7 +18,7 @@ async function execute(interaction, user) {
   const gameReadying = await gameInfo.get('inReady');
   let currentPlayers = (await gameInfo.get('players')) ?? [];
   if (gameOngoing || gameReadying) {
-    await interaction.reply({
+    await interaction.editReply({
       content: `The game is ongoing, nobody can leave!`,
       ephemeral: true,
     });
@@ -36,12 +37,12 @@ async function execute(interaction, user) {
     await genChannel.send(
       `<@${interaction.user.id}> has now left the lobby! Player count is at ${currentPlayers.length}/16.`,
     );
-    await interaction.reply({
+    await interaction.editReply({
       content: `You have left the lobby!`,
       ephemeral: true,
     });
   } else {
-    await interaction.reply({
+    await interaction.editReply({
       content: `You can't leave the lobby if you're not in it.`,
       ephemeral: true,
     });

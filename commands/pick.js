@@ -77,8 +77,9 @@ const data = new SlashCommandBuilder()
   );
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   if (!interaction.guildId) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command can only be used in a server.',
       ephemeral: true,
     });
@@ -92,7 +93,7 @@ async function execute(interaction, user) {
       interaction.user.id,
     )
   ) {
-    return interaction.reply({
+    return interaction.editReply({
       content: `It's not time for you to make a pick!`,
       ephemeral: true,
     });
@@ -110,7 +111,7 @@ async function execute(interaction, user) {
     targetIds.length !== gameState.missionSizes[gameState.missionIndex] ||
     !isUnique(targetIds)
   ) {
-    return interaction.reply({
+    return interaction.editReply({
       content: `That was an incorrect amount of players! You have to submit ${gameState.missionSizes[gameState.missionIndex]} valid players!`,
       ephemeral: true,
     });
@@ -151,7 +152,7 @@ async function execute(interaction, user) {
       `**<@${interaction.user.id}> picked:**\n${targetIds.map((e) => `<@${e}>`).join(', ')}`,
     ),
   );
-  await interaction.reply({
+  await interaction.editReply({
     content: `You made a pick!`,
     ephemeral: true,
   });

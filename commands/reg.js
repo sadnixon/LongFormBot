@@ -15,8 +15,9 @@ const data = new SlashCommandBuilder()
   );
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   if (!interaction.guildId) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command can only be used in a server.',
       ephemeral: true,
     });
@@ -40,10 +41,13 @@ async function execute(interaction, user) {
 
   await gameInfo.set('player_channels', playerChannels);
 
-  await interaction.reply({
-    content: `You have now registered this channel as your private channel for games!`,
-    ephemeral: false,
+  await interaction.editReply({
+    content: `Registration successful!`,
+    ephemeral: true,
   });
+  await interaction.channel.send(
+    `You have now registered this channel as your private channel for games!`,
+  );
 }
 
 module.exports = {

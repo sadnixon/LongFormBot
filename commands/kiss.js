@@ -19,8 +19,9 @@ const data = new SlashCommandBuilder()
   );
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   if (!interaction.guildId) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command can only be used in a server.',
       ephemeral: true,
     });
@@ -28,7 +29,7 @@ async function execute(interaction, user) {
   const gameChannels = await gameInfo.get('game_channels');
 
   if (interaction.channel.id === gameChannels['general'].channelId) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command cannot be used in the game chat.',
       ephemeral: true,
     });
@@ -58,10 +59,14 @@ async function execute(interaction, user) {
       kisses[targetKissee] = 1;
     }
     await gameInfo.set('kisses', kisses);
-    return interaction.reply({
-      content: `Wow, <@${interaction.user.id}> has given <@${targetKissee}> a kiss! This is kiss #${kisses[interaction.user.id][targetKissee]} from this user, bringing <@${[targetKissee]}> up to ${kisses[targetKissee]} total.`,
-      ephemeral: false,
+    await interaction.editReply({
+      content: 'Your kiss was well-received!',
+      ephemeral: true,
     });
+    await interaction.channel.send(
+      `Wow, <@${interaction.user.id}> has given <@${targetKissee}> a kiss! This is kiss #${kisses[interaction.user.id][targetKissee]} from this user, bringing <@${[targetKissee]}> up to ${kisses[targetKissee]} total.`,
+    );
+    return;
   }
 
   if (
@@ -75,25 +80,33 @@ async function execute(interaction, user) {
       (kisses[interaction.user.id][targetKissee] >= 1 &&
         kisses[targetKissee][interaction.user.id] === 1)
     ) {
-      return interaction.reply({
-        content: `Wow, <@${interaction.user.id}> and <@${targetKissee}> just kissed... So cute.`,
-        ephemeral: false,
+      await interaction.editReply({
+        content: 'Your kiss was well-received!',
+        ephemeral: true,
       });
+      await interaction.channel.send(
+        `Wow, <@${interaction.user.id}> and <@${targetKissee}> just kissed... So cute.`,
+      );
+      return;
     } else if (
       kisses[interaction.user.id][targetKissee] +
         kisses[targetKissee][interaction.user.id] ===
       20
     ) {
-      return interaction.reply({
-        content: `OK <@${interaction.user.id}> and <@${targetKissee}> just get married already!`,
-        ephemeral: false,
+      await interaction.editReply({
+        content: 'Your kiss was well-received!',
+        ephemeral: true,
       });
+      await interaction.channel.send(
+        `OK <@${interaction.user.id}> and <@${targetKissee}> just get married already!`,
+      );
+      return;
     } else if (
       kisses[interaction.user.id][targetKissee] +
         kisses[targetKissee][interaction.user.id] >
       20
     ) {
-      return interaction.reply({
+      return interaction.editReply({
         content: `OK that's enough kisses for <@${targetKissee}>.`,
         ephemeral: true,
       });
@@ -101,13 +114,17 @@ async function execute(interaction, user) {
       kisses[interaction.user.id][targetKissee] > 1 &&
       kisses[targetKissee][interaction.user.id] > 1
     ) {
-      return interaction.reply({
-        content: `<@${interaction.user.id}> has given <@${targetKissee}> kiss #${kisses[interaction.user.id][targetKissee]}...`,
-        ephemeral: false,
+      await interaction.editReply({
+        content: 'Your kiss was well-received!',
+        ephemeral: true,
       });
+      await interaction.channel.send(
+        `<@${interaction.user.id}> has given <@${targetKissee}> kiss #${kisses[interaction.user.id][targetKissee]}...`,
+      );
+      return;
     }
   } else {
-    return interaction.reply({
+    return interaction.editReply({
       content: `You sent a kiss to <@${targetKissee}>... I wonder if they will send one too...`,
       ephemeral: true,
     });

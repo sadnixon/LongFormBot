@@ -49,8 +49,9 @@ const data = new SlashCommandBuilder()
   );
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   if (!user.isAuthorized) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'ADMIN ONLY COMMAND',
       ephemeral: true,
     });
@@ -58,14 +59,14 @@ async function execute(interaction, user) {
 
   const gameOngoing = await gameInfo.get('inPlay');
   if (!gameOngoing) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command can only be used during an ongoing game.',
       ephemeral: true,
     });
   }
 
   const missionIndex = interaction.options.getInteger('mission');
-  await interaction.reply({
+  await interaction.editReply({
     content: "Here's how that mission went!",
     ephemeral: true,
   });

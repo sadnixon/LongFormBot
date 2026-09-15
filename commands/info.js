@@ -10,6 +10,7 @@ const data = new SlashCommandBuilder()
   .setDescription('Show information about available commands');
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   const embed = new EmbedBuilder()
     .setTitle('Commands')
     .addFields(
@@ -115,7 +116,7 @@ async function execute(interaction, user) {
       }
     );
 
-  await interaction.reply({
+  await interaction.editReply({
     embeds: [embed],
   });
 }

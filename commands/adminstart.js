@@ -13,8 +13,9 @@ const data = new SlashCommandBuilder()
   .setDescription('Force start the game');
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   if (!user.isAuthorized) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'ADMIN ONLY COMMAND',
       ephemeral: true,
     });
@@ -22,7 +23,7 @@ async function execute(interaction, user) {
 
   const gameOngoing = await gameInfo.get('inPlay');
   if (gameOngoing) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command cannot be used during an ongoing game.',
       ephemeral: true,
     });
@@ -30,12 +31,12 @@ async function execute(interaction, user) {
   const currentPlayers = await gameInfo.get('players');
   if (currentPlayers.length >= 13 && currentPlayers.length <= 16) {
     await startGame(interaction);
-    await interaction.reply({
+    await interaction.editReply({
       content: 'We starting!',
       ephemeral: true,
     });
   } else {
-    await interaction.reply({
+    await interaction.editReply({
       content: 'We not starting!',
       ephemeral: true,
     });

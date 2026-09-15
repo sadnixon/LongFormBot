@@ -13,8 +13,9 @@ const data = new SlashCommandBuilder()
   .setDescription('Check on the current game state with roles revealed');
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   if (!user.isAuthorized) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'ADMIN ONLY COMMAND',
       ephemeral: true,
     });
@@ -22,13 +23,13 @@ async function execute(interaction, user) {
 
   const gameOngoing = await gameInfo.get('inPlay');
   if (!gameOngoing) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command can only be used during an ongoing game.',
       ephemeral: true,
     });
   }
 
-  await interaction.reply({
+  await interaction.editReply({
     content: "Here's the current game state!",
     ephemeral: true,
   });

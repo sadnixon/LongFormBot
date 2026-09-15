@@ -19,8 +19,9 @@ const data = new SlashCommandBuilder()
   );
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   if (!interaction.guildId) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command can only be used in a server.',
       ephemeral: true,
     });
@@ -28,7 +29,7 @@ async function execute(interaction, user) {
   const gameChannels = await gameInfo.get('game_channels');
 
   if (interaction.channel.id === gameChannels['general'].channelId) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command cannot be used in the game chat.',
       ephemeral: true,
     });
@@ -58,10 +59,14 @@ async function execute(interaction, user) {
       kithes[targetKithee] = 1;
     }
     await gameInfo.set('kithes', kithes);
-    return interaction.reply({
-      content: `Wow, <@${interaction.user.id}> has given <@${targetKithee}> a kith! This is kith #${kithes[interaction.user.id][targetKithee]} from this user, bringing <@${[targetKithee]}> up to ${kithes[targetKithee]} total.`,
-      ephemeral: false,
+    await interaction.editReply({
+      content: 'Your kith was well-received!',
+      ephemeral: true,
     });
+    await interaction.channel.send(
+      `Wow, <@${interaction.user.id}> has given <@${targetKithee}> a kith! This is kith #${kithes[interaction.user.id][targetKithee]} from this user, bringing <@${[targetKithee]}> up to ${kithes[targetKithee]} total.`,
+    );
+    return;
   }
 
   if (
@@ -75,25 +80,33 @@ async function execute(interaction, user) {
       (kithes[interaction.user.id][targetKithee] >= 1 &&
         kithes[targetKithee][interaction.user.id] === 1)
     ) {
-      return interaction.reply({
-        content: `Wow, <@${interaction.user.id}> and <@${targetKithee}> just kithed... So cute.`,
-        ephemeral: false,
+      await interaction.editReply({
+        content: 'Your kith was well-received!',
+        ephemeral: true,
       });
+      await interaction.channel.send(
+        `Wow, <@${interaction.user.id}> and <@${targetKithee}> just kithed... So cute.`,
+      );
+      return;
     } else if (
       kithes[interaction.user.id][targetKithee] +
         kithes[targetKithee][interaction.user.id] ===
       20
     ) {
-      return interaction.reply({
-        content: `OK <@${interaction.user.id}> and <@${targetKithee}> just get married already!`,
-        ephemeral: false,
+      await interaction.editReply({
+        content: 'Your kith was well-received!',
+        ephemeral: true,
       });
+      await interaction.channel.send(
+        `OK <@${interaction.user.id}> and <@${targetKithee}> just get married already!`,
+      );
+      return;
     } else if (
       kithes[interaction.user.id][targetKithee] +
         kithes[targetKithee][interaction.user.id] >
       20
     ) {
-      return interaction.reply({
+      return interaction.editReply({
         content: `OK that's enough kithes for <@${targetKithee}>.`,
         ephemeral: true,
       });
@@ -101,13 +114,17 @@ async function execute(interaction, user) {
       kithes[interaction.user.id][targetKithee] > 1 &&
       kithes[targetKithee][interaction.user.id] > 1
     ) {
-      return interaction.reply({
-        content: `<@${interaction.user.id}> has given <@${targetKithee}> kith #${kithes[interaction.user.id][targetKithee]}...`,
-        ephemeral: false,
+      await interaction.editReply({
+        content: 'Your kith was well-received!',
+        ephemeral: true,
       });
+      await interaction.channel.send(
+        `<@${interaction.user.id}> has given <@${targetKithee}> kith #${kithes[interaction.user.id][targetKithee]}...`,
+      );
+      return;
     }
   } else {
-    return interaction.reply({
+    return interaction.editReply({
       content: `You sent a kith to <@${targetKithee}>... I wonder if they will send one too...`,
       ephemeral: true,
     });

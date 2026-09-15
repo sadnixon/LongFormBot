@@ -38,10 +38,11 @@ const data = new SlashCommandBuilder()
   );
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   const playerChannels = await gameInfo.get('player_channels');
   const playerChannelId = playerChannels[interaction.user.id].channelId;
   if (!interaction.guildId || interaction.channel.id !== playerChannelId) {
-    return interaction.reply({
+    return interaction.editReply({
       content: "This command can only be used in a player's private channel.",
       ephemeral: true,
     });
@@ -52,10 +53,12 @@ async function execute(interaction, user) {
   const currentPlayers = await gameInfo.get('players');
   if (
     !gameOngoing ||
-    !['pickWait','pickWaitSupermaj', 'missionWait', 'voteWait'].includes(gameState.currentState) ||
+    !['pickWait', 'pickWaitSupermaj', 'missionWait', 'voteWait'].includes(
+      gameState.currentState,
+    ) ||
     !currentPlayers.includes(interaction.user.id)
   ) {
-    return interaction.reply({
+    return interaction.editReply({
       content: `It's not time for you to Succeed/Fail!`,
       ephemeral: true,
     });
@@ -70,7 +73,7 @@ async function execute(interaction, user) {
       gameState.players[playerIndex].role === 'Guinevere') &&
     targetOutcome !== 'succeed'
   ) {
-    return interaction.reply({
+    return interaction.editReply({
       content: `You are a Resistance member (or Guinevere), so you have to Succeed!`,
       ephemeral: true,
     });
@@ -78,7 +81,7 @@ async function execute(interaction, user) {
     gameState.players[playerIndex].role === 'Oberon' &&
     targetOutcome === 'conditional'
   ) {
-    return interaction.reply({
+    return interaction.editReply({
       content: `You are Oberon, so you cannot conditionally fail.`,
       ephemeral: true,
     });
@@ -89,10 +92,13 @@ async function execute(interaction, user) {
 
   await gameInfo.set('gameState', gameState);
 
-  await interaction.reply({
-    content: `You made a mission outcome choice to ${targetOutcome.toUpperCase()}!`,
-    ephemeral: false,
+  await interaction.editReply({
+    content: `Your mission choice went through!`,
+    ephemeral: true,
   });
+  await interaction.channel.send(
+    `You made a mission outcome choice to ${targetOutcome.toUpperCase()}!`,
+  );
 
   if (
     gameState.passedMissions[gameState.missionIndex] &&

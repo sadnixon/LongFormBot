@@ -13,8 +13,9 @@ const data = new SlashCommandBuilder()
   .setDescription('Ascend to Res Heaven');
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   if (!interaction.guildId) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command can only be used in a server.',
       ephemeral: true,
     });
@@ -29,17 +30,20 @@ async function execute(interaction, user) {
     gameState.players.filter((e) => e.id === interaction.user.id)[0].team !==
       'Resistance'
   ) {
-    await interaction.reply({
+    await interaction.editReply({
       content: `What if YOU tried to ascend to HEAVEN but SadNixon said "NO"`,
       ephemeral: true,
     });
     return;
   }
 
-  await interaction.reply({
-    content: `<@${interaction.user.id}> is ascending to Heaven!`,
-    ephemeral: false,
+  await interaction.editReply({
+    content: `You're ascending!`,
+    ephemeral: true,
   });
+  await interaction.channel.send(
+    `<@${interaction.user.id}> is ascending to Heaven!`,
+  );
 
   const gameChannels = await gameInfo.get('game_channels');
   const genChannel = await interaction.guild.channels.fetch(

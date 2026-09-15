@@ -49,15 +49,16 @@ const data = new SlashCommandBuilder()
   );
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   if (!user.isAuthorized) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'ADMIN ONLY COMMAND',
       ephemeral: true,
     });
   }
   
   if (!interaction.guildId) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command can only be used in a server.',
       ephemeral: true,
     });
@@ -73,7 +74,7 @@ async function execute(interaction, user) {
 
   await gameInfo.set('game_channels', gameChannels);
 
-  await interaction.reply({
+  await interaction.editReply({
     content: `You have now registered this channel as the ${channelType} channel for games!`,
     ephemeral: true,
   });

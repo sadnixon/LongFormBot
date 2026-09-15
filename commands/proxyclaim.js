@@ -35,10 +35,11 @@ const data = new SlashCommandBuilder()
   );
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   const userId = interaction.options.getUser(`user`).id;
 
   if (!interaction.guildId) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command can only be used in a server.',
       ephemeral: true,
     });
@@ -53,7 +54,7 @@ async function execute(interaction, user) {
     gameState.refChain[gameState.refChain.indexOf(userId) + 1] in
       gameState.refClaims
   ) {
-    return interaction.reply({
+    return interaction.editReply({
       content: `It's not time for you to make a claim!`,
       ephemeral: true,
     });
@@ -75,7 +76,7 @@ async function execute(interaction, user) {
       user.isAuthorized
     )
   ) {
-    return interaction.reply({
+    return interaction.editReply({
       content: `You can't proxy act like that!`,
       ephemeral: true,
     });
@@ -93,7 +94,7 @@ async function execute(interaction, user) {
       gameState.players[reffedIndex].team === 'Spy' &&
       targetClaim === 'resistance')
   ) {
-    return interaction.reply({
+    return interaction.editReply({
       content: `Don't throw! You shouldn't lie if you are Resistance.`,
       ephemeral: true,
     });
@@ -116,7 +117,7 @@ async function execute(interaction, user) {
       `**<@${userId}> claims the Ref of the Rain has revealed that <@${gameState.refChain[gameState.refChain.indexOf(userId) + 1]}> is on the ${targetClaim.toUpperCase()} team!**`,
     ),
   );
-  await interaction.reply({
+  await interaction.editReply({
     content: `You made a claim!`,
     ephemeral: true,
   });

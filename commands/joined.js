@@ -8,9 +8,10 @@ const data = new SlashCommandBuilder()
   .setDescription('See users in game');
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   const currentPlayers = (await gameInfo.get('players')) ?? [];
   const readyPlayers = (await gameInfo.get('readyPlayers')) ?? [];
-  await interaction.reply({
+  await interaction.editReply({
     content: `Here you go!`,
     ephemeral: true,
   });

@@ -59,9 +59,10 @@ const data = new SlashCommandBuilder()
   );
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   // Only authorized users can authorize other users
   if (!user.isAuthorized) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'ADMIN ONLY COMMAND',
       ephemeral: true,
     });
@@ -75,7 +76,7 @@ async function execute(interaction, user) {
   const inUser = inUserNoId.id;
 
   if (!gameOngoing || !currentPlayers.includes(outUser)) {
-    return interaction.reply({
+    return interaction.editReply({
       content: `It's not time for you to sub this user!`,
       ephemeral: true,
     });
@@ -235,10 +236,16 @@ async function execute(interaction, user) {
   );
 
   const visibleSpies = gameState.players
-    .filter((e) => ['Morgana', 'Assassin', 'Oberon', 'Witch','Spy'].includes(e.role))
+    .filter((e) =>
+      ['Morgana', 'Assassin', 'Oberon', 'Witch', 'Spy'].includes(e.role),
+    )
     .map((e) => e.id);
   const knownSpies = gameState.players
-    .filter((e) => ['Morgana', 'Assassin', 'Mordred', 'Witch', 'Guinevere','Spy'].includes(e.role))
+    .filter((e) =>
+      ['Morgana', 'Assassin', 'Mordred', 'Witch', 'Guinevere', 'Spy'].includes(
+        e.role,
+      ),
+    )
     .map((e) => e.id);
   const merlinOptions = gameState.players
     .filter((e) => ['Merlin', 'Morgana'].includes(e.role))
@@ -247,7 +254,7 @@ async function execute(interaction, user) {
   const tristanId = gameState.players.filter((e) => e.role === 'Tristan')[0].id;
 
   if (
-    ['Morgana', 'Assassin', 'Mordred', 'Witch', 'Guinevere','Spy'].includes(
+    ['Morgana', 'Assassin', 'Mordred', 'Witch', 'Guinevere', 'Spy'].includes(
       gameState.players[playerIndex].role,
     )
   ) {
@@ -285,7 +292,7 @@ async function execute(interaction, user) {
     await playerChannel.send(
       standardEmbed(
         'You ponder your orb and see the following Spies, the Minions of Mordred:',
-        `${visibleSpies.map((e) => `<@${e}>`).join(', ')}\nHowever, Mordred himself is invisible to you.${gameState.players.map((e) => e.role).includes('Guinevere') ? " Guinevere is also invisible." : ""}`,
+        `${visibleSpies.map((e) => `<@${e}>`).join(', ')}\nHowever, Mordred himself is invisible to you.${gameState.players.map((e) => e.role).includes('Guinevere') ? ' Guinevere is also invisible.' : ''}`,
       ),
     );
   } else if (gameState.players[playerIndex].role === 'Percival') {
@@ -317,10 +324,13 @@ async function execute(interaction, user) {
   await gameInfo.set('players', currentPlayers);
   await gameInfo.set('sawRolePlayers', currentPlayers);
 
-  await interaction.reply({
-    content: `<@${outUser}> has been subbed out and replaced with <@${inUser}>!`,
-    ephemeral: false,
+  await interaction.editReply({
+    content: `You made the sub successfully!`,
+    ephemeral: true,
   });
+  await interaction.channel.send(
+    `<@${outUser}> has been subbed out and replaced with <@${inUser}>!`,
+  );
 }
 
 module.exports = {

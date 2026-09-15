@@ -114,10 +114,13 @@ async function execute(interaction, user) {
 
   await gameInfo.set('gameState', gameState);
 
-  await interaction.reply({
-    content: `You made a mission outcome choice to ${targetOutcome.toUpperCase()}!`,
+  await interaction.editReply({
+    content: `Your mission choice went through!`,
     ephemeral: true,
   });
+  await interaction.channel.send(
+    `You made a mission outcome choice to ${targetOutcome.toUpperCase()}!`,
+  );
 
   if (
     gameState.passedMissions[gameState.missionIndex] &&

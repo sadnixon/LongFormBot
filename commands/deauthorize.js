@@ -13,9 +13,10 @@ const data = new SlashCommandBuilder()
   );
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   // Only authorized users can authorize other users
   if (!user.isAuthorized) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'ADMIN ONLY COMMAND',
       ephemeral: true,
     });
@@ -30,7 +31,7 @@ async function execute(interaction, user) {
     authorizedUsers.filter((x) => x !== targetUser.id),
   );
 
-  await interaction.reply({
+  await interaction.editReply({
     content: `<@${targetUser.id}> is now deauthorized.`,
     ephemeral: true,
   });

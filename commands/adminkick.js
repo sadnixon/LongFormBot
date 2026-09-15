@@ -19,15 +19,16 @@ const data = new SlashCommandBuilder()
   );
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   if (!user.isAuthorized) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'ADMIN ONLY COMMAND',
       ephemeral: true,
     });
   }
   const gameOngoing = await gameInfo.get('inPlay');
   if (gameOngoing) {
-    await interaction.reply({
+    await interaction.editReply({
       content: 'The game is going, too late to kick!',
       ephemeral: true,
     });
@@ -45,12 +46,15 @@ async function execute(interaction, user) {
     );
     await gameInfo.set('inReady', false);
 
-    await interaction.reply({
-      content: `<@${targetUser.id}> has been kicked from the lobby! Player count is at ${currentPlayers.filter((x) => x !== targetUser.id).length}/16.`,
-      ephemeral: false,
+    await interaction.editReply({
+      content: `You have kicked successfully!`,
+      ephemeral: true,
     });
+    await interaction.channel.send(
+      `<@${targetUser.id}> has been kicked from the lobby! Player count is at ${currentPlayers.filter((x) => x !== targetUser.id).length}/16.`,
+    );
   } else {
-    await interaction.reply({
+    await interaction.editReply({
       content: 'They are not in the lobby!',
       ephemeral: true,
     });

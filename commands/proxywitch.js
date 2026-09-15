@@ -41,10 +41,11 @@ const data = new SlashCommandBuilder()
   );
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   const userId = interaction.options.getUser(`user`).id;
 
   if (!interaction.guildId) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command can only be used in a server.',
       ephemeral: true,
     });
@@ -59,7 +60,7 @@ async function execute(interaction, user) {
     gameState.players[playerIndex].role !== 'Witch' ||
     gameState.missionFails > 2
   ) {
-    return interaction.reply({
+    return interaction.editReply({
       content: `It's not time for you to make a witch guess!`,
       ephemeral: true,
     });
@@ -76,7 +77,7 @@ async function execute(interaction, user) {
       ) || user.isAuthorized
     )
   ) {
-    return interaction.reply({
+    return interaction.editReply({
       content: `You can't proxy act like that!`,
       ephemeral: true,
     });
@@ -100,7 +101,7 @@ async function execute(interaction, user) {
         targetRole === 'percival') ||
         targetPlayer.id in gameState.witchCurses))
   ) {
-    return interaction.reply({
+    return interaction.editReply({
       content: `This is not a valid witch guess! You must choose a non-spy player in the current game (you cannot guess the same player twice, or the same role twice, or guess more than twice, or guess after you already got one correct).`,
       ephemeral: true,
     });
@@ -115,7 +116,7 @@ async function execute(interaction, user) {
 
   await gameInfo.set('gameState', gameState);
 
-  await interaction.reply({
+  await interaction.editReply({
     content: `You made a witch guess!`,
     ephemeral: true,
   });

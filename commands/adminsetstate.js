@@ -10,9 +10,10 @@ const data = new SlashCommandBuilder()
   );
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   // Only authorized users can authorize other users
   if (!user.isAuthorized) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'ADMIN ONLY COMMAND',
       ephemeral: true,
     });
@@ -24,8 +25,8 @@ async function execute(interaction, user) {
   gameState.currentState = phaseType;
   await gameInfo.set('gameState', gameState);
 
-  await interaction.reply({
-    content: `The currenState is now ${phaseType.toUpperCase()}.`,
+  await interaction.editReply({
+    content: `The currentState is now ${phaseType.toUpperCase()}.`,
     ephemeral: true,
   });
 }

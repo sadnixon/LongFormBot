@@ -13,21 +13,22 @@ const data = new SlashCommandBuilder()
   .setDescription('Check on the current game state');
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   if (!interaction.guildId) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command can only be used in a server.',
       ephemeral: true,
     });
   }
   const gameOngoing = await gameInfo.get('inPlay');
   if (!gameOngoing) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command can only be used during an ongoing game.',
       ephemeral: true,
     });
   }
 
-  await interaction.reply({
+  await interaction.editReply({
     content: "Here's the current game state!",
     ephemeral: true,
   });

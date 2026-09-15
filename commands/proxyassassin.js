@@ -34,10 +34,11 @@ const data = new SlashCommandBuilder()
   );
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   const userId = interaction.options.getUser(`user`).id;
 
   if (!interaction.guildId) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command can only be used in a server.',
       ephemeral: true,
     });
@@ -59,7 +60,7 @@ async function execute(interaction, user) {
       ) || user.isAuthorized
     )
   ) {
-    return interaction.reply({
+    return interaction.editReply({
       content: `You can't proxy act like that!`,
       ephemeral: true,
     });
@@ -71,7 +72,7 @@ async function execute(interaction, user) {
     !currentPlayers.includes(userId) ||
     gameState.players[playerIndex].role !== 'Assassin'
   ) {
-    return interaction.reply({
+    return interaction.editReply({
       content: `It's not time for you to make an assassination!`,
       ephemeral: true,
     });
@@ -94,7 +95,7 @@ async function execute(interaction, user) {
     gameState.players[targetPlayerIndex]?.team === 'Spy' ||
     (targetPlayer2 && gameState.players[targetPlayer2Index]?.team === 'Spy')
   ) {
-    return interaction.reply({
+    return interaction.editReply({
       content: `This is not a valid assassination! You must choose a non-spy player in the current game (or two non-spy players, if you are shooting for Lovers).`,
       ephemeral: true,
     });
@@ -109,7 +110,7 @@ async function execute(interaction, user) {
   gameState.currentState = 'gameEnd';
   await gameInfo.set('gameState', gameState);
 
-  await interaction.reply({
+  await interaction.editReply({
     content: `You made an assassination!`,
     ephemeral: true,
   });

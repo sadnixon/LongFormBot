@@ -21,14 +21,15 @@ const data = new SlashCommandBuilder()
   );
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   if (!user.isAuthorized) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'ADMIN ONLY COMMAND',
       ephemeral: true,
     });
   }
   if (!interaction.guildId) {
-    return interaction.reply({
+    return interaction.editReply({
       content: 'This command can only be used in a server.',
       ephemeral: true,
     });
@@ -40,7 +41,7 @@ async function execute(interaction, user) {
     gameOngoing ||
     (!gameOngoing && !gameReadying)
   ) {
-    await interaction.reply({
+    await interaction.editReply({
       content: `It's not time for you to ready up!`,
       ephemeral: true,
     });
@@ -56,7 +57,7 @@ async function execute(interaction, user) {
         readyPlayers.push(id);
       }
     }
-    await interaction.reply({
+    await interaction.editReply({
       content: `You have now readied up!`,
       ephemeral: true,
     });

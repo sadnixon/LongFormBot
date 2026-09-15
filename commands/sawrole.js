@@ -13,10 +13,11 @@ const data = new SlashCommandBuilder()
   .setDescription('Acknowledge viewing of role');
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   const playerChannels = await gameInfo.get('player_channels');
   const playerChannelId = playerChannels[interaction.user.id].channelId;
   if (!interaction.guildId || interaction.channel.id !== playerChannelId) {
-    return interaction.reply({
+    return interaction.editReply({
       content: "This command can only be used in a player's private channel.",
       ephemeral: true,
     });
@@ -30,7 +31,7 @@ async function execute(interaction, user) {
     !currentPlayers.includes(interaction.user.id) ||
     sawRolePlayers.includes(interaction.user.id)
   ) {
-    await interaction.reply({
+    await interaction.editReply({
       content: `It's not time for you to acknowledge that you saw your role!`,
       ephemeral: true,
     });
@@ -40,10 +41,13 @@ async function execute(interaction, user) {
   sawRolePlayers.push(interaction.user.id);
   await gameInfo.set('sawRolePlayers', sawRolePlayers);
 
-  await interaction.reply({
-    content: `Thanks for looking at your role! You now have access to the public channels.`,
-    ephemeral: false,
+  await interaction.editReply({
+    content: `You did it!`,
+    ephemeral: true,
   });
+  await interaction.channel.send(
+    `Thanks for looking at your role! You now have access to the public channels.`,
+  );
 
   const gameChannels = await gameInfo.get('game_channels');
   const genChannel = await interaction.guild.channels.fetch(
