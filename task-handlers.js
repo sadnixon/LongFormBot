@@ -24,7 +24,7 @@ function initializeTaskHandlers(discordClient) {
 
   registerHandler('end_supermaj', async (data) => {
     const gameState = await gameInfo.get('gameState');
-
+    const guild = await client.guilds.fetch(gameState.guildId);
     const gameChannels = await gameInfo.get('game_channels');
     const pickChannel = await guild.channels.fetch(
       gameChannels['picks'].channelId,
