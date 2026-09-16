@@ -9,7 +9,7 @@ const {
 const { standardEmbed } = require('../message-helpers');
 
 const data = new SlashCommandBuilder()
-  .setName('sawrole')
+  .setName('ack')
   .setDescription('Acknowledge viewing of role');
 
 async function execute(interaction, user) {

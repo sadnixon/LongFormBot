@@ -80,6 +80,12 @@ const data = new SlashCommandBuilder()
       .setName('player8')
       .setDescription('The eighth player to add to your mission')
       .setRequired(false),
+  )
+  .addUserOption((option) =>
+    option
+      .setName('player9')
+      .setDescription('The ninth player to add to your mission')
+      .setRequired(false),
   );
 
 async function execute(interaction, user) {
@@ -130,7 +136,7 @@ async function execute(interaction, user) {
   }
 
   const targetUsers = [];
-  for (let i = 1; i < 9; i++) {
+  for (let i = 1; i < 10; i++) {
     targetUsers.push(interaction.options.getUser(`player${i}`));
   }
   const targetIds = targetUsers

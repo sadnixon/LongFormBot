@@ -35,7 +35,7 @@ async function execute(interaction, user) {
     await gameInfo.set('players', currentPlayers);
 
     await genChannel.send(
-      `<@${interaction.user.id}> has now left the lobby! Player count is at ${currentPlayers.length}/16.`,
+      `<@${interaction.user.id}> has now left the lobby! Player count is at ${currentPlayers.length}/17.`,
     );
     await interaction.editReply({
       content: `You have left the lobby!`,

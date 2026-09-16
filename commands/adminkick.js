@@ -51,7 +51,7 @@ async function execute(interaction, user) {
       ephemeral: true,
     });
     await interaction.channel.send(
-      `<@${targetUser.id}> has been kicked from the lobby! Player count is at ${currentPlayers.filter((x) => x !== targetUser.id).length}/16.`,
+      `<@${targetUser.id}> has been kicked from the lobby! Player count is at ${currentPlayers.filter((x) => x !== targetUser.id).length}/17.`,
     );
   } else {
     await interaction.editReply({

@@ -69,7 +69,7 @@ async function execute(interaction, user) {
       ephemeral: true,
     });
     await interaction.channel.send('You have now readied up!');
-    if (readyPlayers.length === 16) {
+    if (readyPlayers.length === 17) {
       await startGame(interaction);
     }
   } else {

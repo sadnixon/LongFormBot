@@ -60,6 +60,9 @@ async function startGame(interaction) {
   } else if (player_num > 14) {
     roles.push('Guinevere');
   }
+  if (player_num > 16) {
+    roles.push('Resistance');
+  }
 
   const gameChannels = await gameInfo.get('game_channels');
   const playerChannels = await gameInfo.get('player_channels');
@@ -237,7 +240,7 @@ async function startGame(interaction) {
     }
 
     await playerChannel.send(
-      `**<@${shuffledPlayers[i]}>, you are ${shuffledRoles[i]}!**\n\nUse /sawrole to acknowledge that you have viewed your role and gain access to the public chats.`,
+      `**<@${shuffledPlayers[i]}>, you are ${shuffledRoles[i]}!**\n\nUse /ack to acknowledge that you have viewed your role and gain access to the public chats.`,
     );
     if (
       ['Morgana', 'Assassin', 'Mordred', 'Witch', 'Guinevere', 'Spy'].includes(
@@ -331,7 +334,9 @@ async function startGame(interaction) {
     missionSizes:
       shuffledPlayers.length === 13
         ? [4, 5, 6, 7, 6, 7, 7]
-        : [4, 5, 6, 7, 7, 8, 8],
+        : shuffledPlayers.length < 17
+          ? [4, 5, 6, 7, 7, 8, 8]
+          : [5, 6, 7, 8, 8, 9, 9],
     failsNeeded: [1, 1, 1, 2, 1, 2, 1],
     players: _.range(0, player_num).map((i) => ({
       id: shuffledPlayers[i],
@@ -742,7 +747,7 @@ async function missionCompletion(client) {
   ).length;
   if (failCount >= gameState.failsNeeded[gameState.missionIndex]) {
     await announceChannel.send(
-      `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe M${gameState.missionIndex + 1} chosen by <@${gameState.passedMissions[gameState.missionIndex].id}> has FAILED with ${failCount} fail(s)!`,
+      `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe M${gameState.missionIndex + 1} chosen by <@${gameState.passedMissions[gameState.missionIndex].id}>\n(${gameState.passedMissons[gameState.missionIndex].team.map((e) => `<@${e}>`).join(" + ")})\nhas **FAILED** with ${failCount} fail(s)!`,
     );
     gameState.missionFails += 1;
 
@@ -770,7 +775,7 @@ async function missionCompletion(client) {
     }
   } else {
     await announceChannel.send(
-      `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe M${gameState.missionIndex + 1} chosen by <@${gameState.passedMissions[gameState.missionIndex].id}> has SUCCEEDED!. Number of fails: ${failCount}.`,
+      `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe M${gameState.missionIndex + 1} chosen by <@${gameState.passedMissions[gameState.missionIndex].id}>\n(${gameState.passedMissons[gameState.missionIndex].team.map((e) => `<@${e}>`).join(" + ")})\nhas **SUCCEEDED**!. Number of fails: ${failCount}.`,
     );
     gameState.missionSuccs += 1;
 
@@ -806,7 +811,7 @@ async function missionCompletion(client) {
         (e) => e.role === 'Assassin',
       )[0].id;
       await sendGameState(client);
-      await genChannel.send(
+      await announceChannel.send(
         `This is the fourth mission to succeed. It's time for <@${assassinPlayer}> to choose a player (or players) to assassinate using /assassin!`,
       );
       await scheduleInXHours('end_assassin', {}, 24);
@@ -822,6 +827,9 @@ async function endGame(client) {
   const gameChannels = await gameInfo.get('game_channels');
   const genChannel = await guild.channels.fetch(
     gameChannels['general'].channelId,
+  );
+  const nongameChannel = await guild.channels.fetch(
+    gameChannels['nongame'].channelId,
   );
   const picksChannel = await guild.channels.fetch(
     gameChannels['picks'].channelId,
@@ -850,6 +858,9 @@ async function endGame(client) {
     if (!member) continue;
     await genChannel.permissionOverwrites.edit(id, {
       [PermissionFlagsBits.SendMessages]: false,
+    });
+    await nongameChannel.permissionOverwrites.edit(id, {
+      [PermissionFlagsBits.SendMessages]: true,
     });
     await picksChannel.permissionOverwrites.edit(id, {
       [PermissionFlagsBits.SendMessages]: false,

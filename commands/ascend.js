@@ -49,6 +49,9 @@ async function execute(interaction, user) {
   const genChannel = await interaction.guild.channels.fetch(
     gameChannels['general'].channelId,
   );
+  const nongameChannel = await interaction.guild.channels.fetch(
+    gameChannels['nongame'].channelId,
+  );
   const picksChannel = await interaction.guild.channels.fetch(
     gameChannels['picks'].channelId,
   );
@@ -66,6 +69,9 @@ async function execute(interaction, user) {
   );
 
   await genChannel.permissionOverwrites.edit(interaction.user.id, {
+    [PermissionFlagsBits.SendMessages]: false,
+  });
+  await nongameChannel.permissionOverwrites.edit(interaction.user.id, {
     [PermissionFlagsBits.SendMessages]: false,
   });
   await picksChannel.permissionOverwrites.edit(interaction.user.id, {

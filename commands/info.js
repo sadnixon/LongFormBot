@@ -35,7 +35,7 @@ async function execute(interaction, user) {
           "Register a channel as your private channel for games",
       },
       {
-        name: '/sawrole',
+        name: '/ack',
         value:
           "Acknowledge that you saw your role at the start of the game",
       },

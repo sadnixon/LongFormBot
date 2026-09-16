@@ -29,7 +29,7 @@ async function execute(interaction, user) {
     });
   }
   const currentPlayers = await gameInfo.get('players');
-  if (currentPlayers.length >= 13 && currentPlayers.length <= 16) {
+  if (currentPlayers.length >= 13 && currentPlayers.length <= 17) {
     await startGame(interaction);
     await interaction.editReply({
       content: 'We starting!',
