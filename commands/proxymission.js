@@ -44,6 +44,7 @@ const data = new SlashCommandBuilder()
   );
 
 async function execute(interaction, user) {
+  await interaction.deferReply({ ephemeral: true });
   const userId = interaction.options.getUser(`user`).id;
 
   if (!interaction.guildId) {
