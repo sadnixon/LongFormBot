@@ -133,7 +133,7 @@ async function execute(interaction, user) {
   );
   await sendGameState(interaction.client);
   await genChannel.send(
-    `${gameState.missionPickers[gameState.missionIndex].map((e) => `<@${e}>`).join(', ')}, it is time to pick a mission using /pick.`,
+    `${gameState.missionPickers[gameState.missionIndex].map((e) => `<@${e}>`).join(', ')}, it is time to pick a mission using /pick.\nYou are picking **${gameState.missionSizes[gameState.missionIndex]}**; the mission needs **${gameState.failsNeeded[gameState.missionIndex]}** fail(s) to fail.`,
   );
   await scheduleInXHours('end_supermaj', {}, 6);
   await scheduleInXHours('end_vote', {}, 18);

@@ -213,7 +213,7 @@ async function execute(interaction, user) {
     );
     await sendGameState(interaction.client);
     await genChannel.send(
-      `${gameState.passedMissions[gameState.missionIndex].team.map((e) => `<@${e}>`).join(' ')}\nIt's time to run M${gameState.missionIndex + 1}! Go decide if the mission will succeed or fail with /mission.`,
+      `${gameState.passedMissions[gameState.missionIndex].team.map((e) => `<@${e}>`).join(' ')}\nIt's time to run M${gameState.missionIndex + 1}! Go decide if the mission will succeed or fail with /mission.\nThis mission needs **${gameState.failsNeeded[gameState.missionIndex]}** fail(s) to fail.`,
     );
 
     //Final mission check

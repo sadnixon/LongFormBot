@@ -29,6 +29,9 @@ function initializeTaskHandlers(discordClient) {
     const pickChannel = await guild.channels.fetch(
       gameChannels['picks'].channelId,
     );
+    const genChannel = await guild.channels.fetch(
+      gameChannels['general'].channelId,
+    );
 
     let mostVotes = 0;
     let mostVotesMission;
@@ -60,7 +63,7 @@ function initializeTaskHandlers(discordClient) {
       );
       await sendGameState(client);
       await genChannel.send(
-        `${gameState.passedMissions[gameState.missionIndex].team.map((e) => `<@${e}>`).join(' ')}\nIt's time to run M${gameState.missionIndex + 1}! Go decide if the mission will succeed or fail with /mission.`,
+        `${gameState.passedMissions[gameState.missionIndex].team.map((e) => `<@${e}>`).join(' ')}\nIt's time to run M${gameState.missionIndex + 1}! Go decide if the mission will succeed or fail with /mission.\nThis mission needs **${gameState.failsNeeded[gameState.missionIndex]}** fail(s) to fail.`,
       );
 
       //Final mission check
@@ -170,7 +173,7 @@ function initializeTaskHandlers(discordClient) {
     );
     await sendGameState(client);
     await genChannel.send(
-      `${gameState.passedMissions[gameState.missionIndex].team.map((e) => `<@${e}>`).join(' ')}\nIt's time to run M${gameState.missionIndex + 1}! Go decide if the mission will succeed or fail with /mission.`,
+      `${gameState.passedMissions[gameState.missionIndex].team.map((e) => `<@${e}>`).join(' ')}\nIt's time to run M${gameState.missionIndex + 1}! Go decide if the mission will succeed or fail with /mission.\nThis mission needs **${gameState.failsNeeded[gameState.missionIndex]}** fail(s) to fail.`,
     );
 
     //Final mission check
@@ -227,8 +230,8 @@ function initializeTaskHandlers(discordClient) {
     ].team.filter((e) => !(e in gameState.missionSFs[gameState.missionIndex]));
 
     const validOutcomes = _.pick(
-      gameState.missionSFs[missionIndex],
-      gameState.passedMissions[missionIndex].team,
+      gameState.missionSFs[gameState.missionIndex],
+      gameState.passedMissions[gameState.missionIndex].team,
     );
     const failCount = Object.values(validOutcomes).filter(
       (e) => e === 'fail',
@@ -267,12 +270,11 @@ function initializeTaskHandlers(discordClient) {
     const pickChannel = await guild.channels.fetch(
       gameChannels['picks'].channelId,
     );
+    const genChannel = await guild.channels.fetch(
+      gameChannels['general'].channelId,
+    );
 
     if (gameState.currentState === 'adminPaused') {
-      const genChannel = await guild.channels.fetch(
-        gameChannels['general'].channelId,
-      );
-
       await genChannel.send(
         standardEmbed(
           'TIMER IGNORED',
@@ -348,7 +350,7 @@ function initializeTaskHandlers(discordClient) {
       );
       await sendGameState(client);
       await genChannel.send(
-        `${gameState.passedMissions[gameState.missionIndex].team.map((e) => `<@${e}>`).join(' ')}\nIt's time to run M${gameState.missionIndex + 1}! Go decide if the mission will succeed or fail with /mission.`,
+        `${gameState.passedMissions[gameState.missionIndex].team.map((e) => `<@${e}>`).join(' ')}\nIt's time to run M${gameState.missionIndex + 1}! Go decide if the mission will succeed or fail with /mission.\nThis mission needs **${gameState.failsNeeded[gameState.missionIndex]}** fail(s) to fail.`,
       );
 
       //Final mission check
@@ -447,7 +449,7 @@ function initializeTaskHandlers(discordClient) {
     );
     await sendGameState(client);
     await genChannel.send(
-      `${gameState.missionPickers[gameState.missionIndex].map((e) => `<@${e}>`).join(', ')}, it is time to pick a mission using /pick.`,
+      `${gameState.missionPickers[gameState.missionIndex].map((e) => `<@${e}>`).join(', ')}, it is time to pick a mission using /pick.\nYou are picking **${gameState.missionSizes[gameState.missionIndex]}**; the mission needs **${gameState.failsNeeded[gameState.missionIndex]}** fail(s) to fail.`,
     );
     await scheduleInXHours('end_supermaj', {}, 6);
     await scheduleInXHours('end_vote', {}, 18);

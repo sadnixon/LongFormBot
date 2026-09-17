@@ -395,7 +395,7 @@ async function startGame(interaction) {
 
   await sendGameState(interaction.client, 'general');
   await genChannel.send(
-    `${startState.missionPickers[startState.missionIndex].map((e) => `<@${e}>`).join(', ')}, it is time to pick a mission using /pick.`,
+    `${startState.missionPickers[startState.missionIndex].map((e) => `<@${e}>`).join(', ')}, it is time to pick a mission using /pick.\nYou are picking **${startState.missionSizes[startState.missionIndex]}**; the mission needs **${startState.failsNeeded[startState.missionIndex]}** fail(s) to fail.`,
   );
   await scheduleInXHours('end_supermaj', {}, 6);
   await scheduleInXHours('end_vote', {}, 18);
@@ -512,11 +512,17 @@ async function sendGameState(
     )
     .join('\n');
 
+  const pickingFor = ['pickWait', 'pickWaitSupermaj'].includes(
+    gameState.currentState,
+  )
+    ? `\nPicking **${gameState.missionSizes[missionIndex]}**, **${gameState.failsNeeded[missionIndex]}** to fail.`
+    : '';
+
   const embedColor = reveal && winner !== 'none' ? winner : 'Neutral';
 
   const embed = standardEmbed(
     'Current Game State:',
-    `${gameState.players.map((e, i) => `${i + 1}. ${playerHist(e.id)}<@${e.id}> ${pCrowns[i]}${pRef[i]}${reveal ? `**(${e.role})**` : ''}`).join('\n')}\n**Ref Chain:** ${gameState.refChain.map((e) => `<@${e}>${e in gameState.refClaims ? ` (${gameState.refClaims[e][0].toUpperCase()})` : ''}`).join('-> ')}\n\n**Missions:**\n${missionSection}\n\n${witchHistory}**Waiting on:** ${waitingOnIds.map((e) => `<@${e}>`).join(', ')}\n\n**State:** ${gameState.currentState}${gameState.phaseTimers.length > 0 ? `\nPhase Ends <t:${Math.floor(gameState.phaseTimers[0].timeStamp / 1000)}:R>` : ''}`,
+    `${gameState.players.map((e, i) => `${i + 1}. ${playerHist(e.id)}<@${e.id}> ${pCrowns[i]}${pRef[i]}${reveal ? `**(${e.role})**` : ''}`).join('\n')}\n**Ref Chain:** ${gameState.refChain.map((e) => `<@${e}>${e in gameState.refClaims ? ` (${gameState.refClaims[e][0].toUpperCase()})` : ''}`).join('-> ')}\n\n**Missions:**\n${missionSection}\n\n${witchHistory}**Waiting on:** ${waitingOnIds.map((e) => `<@${e}>`).join(', ')}${pickingFor}\n\n**State:** ${gameState.currentState}${gameState.phaseTimers.length > 0 ? `\nPhase Ends <t:${Math.floor(gameState.phaseTimers[0].timeStamp / 1000)}:R>` : ''}`,
     embedColor,
   );
 
@@ -803,7 +809,7 @@ async function missionCompletion(client) {
       await gameInfo.set('gameState', gameState);
       await sendGameState(client);
       await genChannel.send(
-        `${gameState.missionPickers[gameState.missionIndex].map((e) => `<@${e}>`).join(', ')}, it is time to pick a mission using /pick.`,
+        `${gameState.missionPickers[gameState.missionIndex].map((e) => `<@${e}>`).join(', ')}, it is time to pick a mission using /pick.\nYou are picking **${gameState.missionSizes[gameState.missionIndex]}**; the mission needs **${gameState.failsNeeded[gameState.missionIndex]}** fail(s) to fail.`,
       );
       await scheduleInXHours('end_supermaj', {}, 6);
       await scheduleInXHours('end_vote', {}, 18);
