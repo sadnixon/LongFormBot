@@ -515,7 +515,7 @@ async function sendGameState(
   const pickingFor = ['pickWait', 'pickWaitSupermaj'].includes(
     gameState.currentState,
   )
-    ? `\nPicking **${gameState.missionSizes[missionIndex]}**, **${gameState.failsNeeded[missionIndex]}** to fail.`
+    ? `\nPicking **${gameState.missionSizes[gameState.missionIndex]}**, **${gameState.failsNeeded[gameState.missionIndex]}** to fail.`
     : '';
 
   const embedColor = reveal && winner !== 'none' ? winner : 'Neutral';
