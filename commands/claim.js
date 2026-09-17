@@ -58,7 +58,9 @@ async function execute(interaction, user) {
     .indexOf(interaction.user.id);
   const reffedIndex = gameState.players
     .map((e) => e.id)
-    .indexOf(gameState.refChain[gameState.refChain.indexOf(interaction.user.id) + 1]);
+    .indexOf(
+      gameState.refChain[gameState.refChain.indexOf(interaction.user.id) + 1],
+    );
   if (
     (gameState.players[playerIndex].team === 'Resistance' &&
       gameState.players[reffedIndex].team === 'Resistance' &&
@@ -88,6 +90,7 @@ async function execute(interaction, user) {
     standardEmbed(
       'A claim has been made!',
       `**<@${interaction.user.id}> claims the Ref of the Rain has revealed that <@${gameState.refChain[gameState.refChain.indexOf(interaction.user.id) + 1]}> is on the ${targetClaim.toUpperCase()} team!**`,
+      targetClaim,
     ),
   );
   await interaction.editReply({

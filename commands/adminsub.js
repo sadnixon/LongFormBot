@@ -268,6 +268,7 @@ async function execute(interaction, user) {
       standardEmbed(
         'Your co-Spies, the Minions of Mordred, stand assembled:',
         `${knownSpies.map((e) => `<@${e}>`).join(', ')}\nYour last ally, Oberon the King of Fairies, didn't make it to the meeting.`,
+        'Spy',
       ),
     );
   } else if (
@@ -282,10 +283,12 @@ async function execute(interaction, user) {
     if (gameState.players[playerIndex].role === 'Tristan') {
       await playerChannel.send(
         standardEmbed('Your beautiful Irish princess is:', `<@${isoldeId}>`),
+        'Resistance',
       );
     } else {
       await playerChannel.send(
         standardEmbed('Your heroic Cornish knight is:', `<@${tristanId}>`),
+        'Resistance',
       );
     }
   } else if (gameState.players[playerIndex].role === 'Merlin') {
@@ -293,6 +296,7 @@ async function execute(interaction, user) {
       standardEmbed(
         'You ponder your orb and see the following Spies, the Minions of Mordred:',
         `${visibleSpies.map((e) => `<@${e}>`).join(', ')}\nHowever, Mordred himself is invisible to you.${gameState.players.map((e) => e.role).includes('Guinevere') ? ' Guinevere is also invisible.' : ''}`,
+        'Resistance',
       ),
     );
   } else if (gameState.players[playerIndex].role === 'Percival') {
@@ -300,6 +304,7 @@ async function execute(interaction, user) {
       standardEmbed(
         'The evil enchantress Morgana cast a spell on herself and the honorable Merlin; you do not know which is which:',
         merlinOptions.map((e) => `<@${e}>`).join(', '),
+        'Resistance',
       ),
     );
   }
@@ -316,6 +321,7 @@ async function execute(interaction, user) {
       standardEmbed(
         'The Ref of the Rain reveals to you the following information:',
         `<@${targetPlayer}> is on the ${targetTeam} team!`,
+        targetTeam,
       ),
     );
   }

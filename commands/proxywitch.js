@@ -130,6 +130,7 @@ async function execute(interaction, user) {
     standardEmbed(
       'A Witch guess was made!',
       `<@${userId}> Witch guessed <@${targetPlayer.id}> as ${targetRole.toUpperCase()}!`,
+      'Spy',
     ),
   );
 }

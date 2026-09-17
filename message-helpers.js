@@ -15,7 +15,9 @@ const errorMessage = (message) => {
 
 const colorMap = {
   Resistance: '#0087d6',
+  resistance: '#0087d6',
   Spy: '#fc4141',
+  spy: '#fc4141',
   Neutral: '#7f7f7f',
 };
 
@@ -737,6 +739,7 @@ async function missionCompletion(client) {
         standardEmbed(
           'There has been a second failed Witch guess!',
           `A fail on this mission has been turned into a success as punishment.`,
+          'Resistance',
         ),
       );
     }
@@ -747,7 +750,7 @@ async function missionCompletion(client) {
   ).length;
   if (failCount >= gameState.failsNeeded[gameState.missionIndex]) {
     await announceChannel.send(
-      `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe M${gameState.missionIndex + 1} chosen by <@${gameState.passedMissions[gameState.missionIndex].id}>\n(${gameState.passedMissons[gameState.missionIndex].team.map((e) => `<@${e}>`).join(" + ")})\nhas **FAILED** with ${failCount} fail(s)!`,
+      `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe M${gameState.missionIndex + 1} chosen by <@${gameState.passedMissions[gameState.missionIndex].id}>\n(${gameState.passedMissons[gameState.missionIndex].team.map((e) => `<@${e}>`).join(' + ')})\nhas **FAILED** with ${failCount} fail(s)!`,
     );
     gameState.missionFails += 1;
 
@@ -769,13 +772,14 @@ async function missionCompletion(client) {
         standardEmbed(
           'There has been a loss on missions!',
           `This is the fourth mission to fail.`,
+          'Spy',
         ),
       );
       await endGame(client);
     }
   } else {
     await announceChannel.send(
-      `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe M${gameState.missionIndex + 1} chosen by <@${gameState.passedMissions[gameState.missionIndex].id}>\n(${gameState.passedMissons[gameState.missionIndex].team.map((e) => `<@${e}>`).join(" + ")})\nhas **SUCCEEDED**!. Number of fails: ${failCount}.`,
+      `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe M${gameState.missionIndex + 1} chosen by <@${gameState.passedMissions[gameState.missionIndex].id}>\n(${gameState.passedMissons[gameState.missionIndex].team.map((e) => `<@${e}>`).join(' + ')})\nhas **SUCCEEDED**!. Number of fails: ${failCount}.`,
     );
     gameState.missionSuccs += 1;
 

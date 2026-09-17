@@ -27,8 +27,8 @@ async function execute(interaction, user) {
     .map((e) => e.id)
     .indexOf(interaction.user.id);
   const untriggeredWitches = Object.values(gameState.witchCurses).filter(
-      (e) => !e.triggered,
-    );
+    (e) => !e.triggered,
+  );
   if (
     !gameOngoing ||
     !currentPlayers.includes(interaction.user.id) ||
@@ -62,6 +62,7 @@ async function execute(interaction, user) {
     standardEmbed(
       'A Witch guess was unmade!',
       `<@${interaction.user.id}> removed the Witch guess on <@${targetWitch.id}> as ${targetWitch.role.toUpperCase()}!`,
+      'Spy',
     ),
   );
 }

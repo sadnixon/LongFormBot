@@ -111,6 +111,7 @@ async function execute(interaction, user) {
         standardEmbed(
           'An assassination was made!',
           `**<@${interaction.user.id}> assassinated <@${gameState.assassinShot[0]}> and <@${gameState.assassinShot[1]}> as the Lovers!**\nTheir roles were indeed ${gameState.players[targetPlayerIndex].role} and ${gameState.players[targetPlayer2Index].role}!`,
+          'Spy',
         ),
       );
     } else {
@@ -118,6 +119,7 @@ async function execute(interaction, user) {
         standardEmbed(
           'An assassination was made!',
           `**<@${interaction.user.id}> assassinated <@${gameState.assassinShot[0]}> and <@${gameState.assassinShot[1]}> as the Lovers!**\nBut their roles were ${gameState.players[targetPlayerIndex].role} and ${gameState.players[targetPlayer2Index].role}.\n\nThe real Lovers were ${actualLovers.map((e) => `<@${e}>`).join(' and ')}.`,
+          'Resistance',
         ),
       );
     }
@@ -130,6 +132,7 @@ async function execute(interaction, user) {
         standardEmbed(
           'An assassination was made!',
           `**<@${interaction.user.id}> assassinated <@${gameState.assassinShot[0]}> as Merlin!**\nTheir role was indeed ${gameState.players[targetPlayerIndex].role}!`,
+          'Spy',
         ),
       );
     } else {
@@ -137,6 +140,7 @@ async function execute(interaction, user) {
         standardEmbed(
           'An assassination was made!',
           `**<@${interaction.user.id}> assassinated <@${gameState.assassinShot[0]}> as Merlin!**\nBut their role was ${gameState.players[targetPlayerIndex].role}.\n\nThe real Merlin was <@${actualMerlin}>.`,
+          'Resistance',
         ),
       );
     }

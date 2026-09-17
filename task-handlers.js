@@ -436,6 +436,7 @@ function initializeTaskHandlers(discordClient) {
       standardEmbed(
         'RNG has forced the Ref of the Rain to reveal to you the following information:',
         `<@${targetPlayer}> is on the ${targetTeam} team!`,
+        targetTeam,
       ),
     );
     await announceChannel.send(
@@ -503,6 +504,7 @@ function initializeTaskHandlers(discordClient) {
         standardEmbed(
           'An assassination was made!',
           `**<@${assassinId}> (randomly) assassinated <@${gameState.assassinShot[0]}> as Merlin!**\nTheir role was indeed ${gameState.players[targetPlayerIndex].role}!`,
+          'Spy',
         ),
       );
     } else {
@@ -510,6 +512,7 @@ function initializeTaskHandlers(discordClient) {
         standardEmbed(
           'An assassination was made!',
           `**<@${assassinId}> (randomly) assassinated <@${gameState.assassinShot[0]}> as Merlin!**\nBut their role was ${gameState.players[targetPlayerIndex].role}.\n\nThe real Merlin was <@${actualMerlin}>.`,
+          'Resistance',
         ),
       );
     }

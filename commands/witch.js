@@ -68,7 +68,7 @@ async function execute(interaction, user) {
 
   if (
     !currentPlayers.includes(targetPlayer.id) ||
-    ['Assassin', 'Morgana', 'Mordred', 'Witch','Spy'].includes(
+    ['Assassin', 'Morgana', 'Mordred', 'Witch', 'Spy'].includes(
       gameState.players[targetPlayerIndex].role,
     ) ||
     (gameState.witchResults.length > 0 && gameState.witchResults[0].success) ||
@@ -107,6 +107,7 @@ async function execute(interaction, user) {
     standardEmbed(
       'A Witch guess was made!',
       `<@${interaction.user.id}> Witch guessed <@${targetPlayer.id}> as ${targetRole.toUpperCase()}!`,
+      'Spy',
     ),
   );
 }
