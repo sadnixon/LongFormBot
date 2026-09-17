@@ -756,7 +756,7 @@ async function missionCompletion(client) {
   ).length;
   if (failCount >= gameState.failsNeeded[gameState.missionIndex]) {
     await announceChannel.send(
-      `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe M${gameState.missionIndex + 1} chosen by <@${gameState.passedMissions[gameState.missionIndex].id}>\n(${gameState.passedMissons[gameState.missionIndex].team.map((e) => `<@${e}>`).join(' + ')})\nhas **FAILED** with ${failCount} fail(s)!`,
+      `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe M${gameState.missionIndex + 1} chosen by <@${gameState.passedMissions[gameState.missionIndex].id}>\n(${gameState.passedMissions[gameState.missionIndex].team.map((e) => `<@${e}>`).join(' + ')})\nhas **FAILED** with ${failCount} fail(s)!`,
     );
     gameState.missionFails += 1;
 
@@ -785,7 +785,7 @@ async function missionCompletion(client) {
     }
   } else {
     await announceChannel.send(
-      `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe M${gameState.missionIndex + 1} chosen by <@${gameState.passedMissions[gameState.missionIndex].id}>\n(${gameState.passedMissons[gameState.missionIndex].team.map((e) => `<@${e}>`).join(' + ')})\nhas **SUCCEEDED**!. Number of fails: ${failCount}.`,
+      `${currentPlayers.map((e) => `<@${e}>`).join(' ')}\nThe M${gameState.missionIndex + 1} chosen by <@${gameState.passedMissions[gameState.missionIndex].id}>\n(${gameState.passedMissions[gameState.missionIndex].team.map((e) => `<@${e}>`).join(' + ')})\nhas **SUCCEEDED**!. Number of fails: ${failCount}.`,
     );
     gameState.missionSuccs += 1;
 
