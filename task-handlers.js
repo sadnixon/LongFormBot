@@ -53,6 +53,7 @@ function initializeTaskHandlers(discordClient) {
     ) {
       await clearTasks();
       const gameState = await gameInfo.get('gameState');
+      const currentPlayers = await gameInfo.get('players');
       gameState.currentState = 'missionWait';
       gameState.passedMissions.push(
         gameState.missionPicks[gameState.missionIndex][mostVotesMission],
