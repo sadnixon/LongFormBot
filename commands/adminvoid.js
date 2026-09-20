@@ -61,7 +61,7 @@ async function execute(interaction, user) {
   if (voidType === 'game') {
     await gameInfo.set('gameState', {});
     await gameInfo.set('players', []);
-    await gameInfo.set('sawRolePlayers',[]);
+    await gameInfo.set('sawRolePlayers', []);
     await gameInfo.set('readyPlayers', []);
     await gameInfo.set('inPlay', false);
     await gameInfo.set('inReady', false);
@@ -73,7 +73,7 @@ async function execute(interaction, user) {
   } else if (voidType === 'signups') {
     await gameInfo.set('players', []);
     await gameInfo.set('readyPlayers', []);
-    await gameInfo.set('sawRolePlayers',[]);
+    await gameInfo.set('sawRolePlayers', []);
     await gameInfo.set('inPlay', false);
     await gameInfo.set('inReady', false);
   } else if (voidType === 'ready') {
@@ -82,7 +82,7 @@ async function execute(interaction, user) {
   } else if (voidType === 'back') {
     await gameInfo.set('gameState', {});
     await gameInfo.set('readyPlayers', []);
-    await gameInfo.set('sawRolePlayers',[]);
+    await gameInfo.set('sawRolePlayers', []);
     await gameInfo.set('inPlay', false);
     await gameInfo.set('inReady', true);
     await schedDB.clear();
@@ -93,14 +93,8 @@ async function execute(interaction, user) {
     await gameInfo.set('gameState', gameState);
   } else if (voidType === 'special') {
     const gameState = await gameInfo.get('gameState');
-    gameState.witchCurses = {
-      '1302164824775462912': {
-        id: '1302164824775462912',
-        role: 'lover',
-        triggered: true,
-        index: 0,
-      },
-    };
+    gameState.missionSizes = [5, 6, 7, 8, 8, 9, 9];
+
     await gameInfo.set('gameState', gameState);
   }
 
