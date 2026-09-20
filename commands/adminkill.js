@@ -31,7 +31,7 @@ async function execute(interaction, user) {
   const gameOngoing = await gameInfo.get('inPlay');
   let currentPlayers = await gameInfo.get('players');
 
-  const outUser = interaction.options.getUser('out');
+  const outUser = interaction.options.getString('out');
 
   if (!gameOngoing || !currentPlayers.includes(outUser)) {
     return interaction.editReply({
