@@ -94,7 +94,7 @@ async function execute(interaction, user) {
       ephemeral: true,
     });
 
-    if (currentPlayers.length === 17) {
+    if (currentPlayers.length === 100) {
       await gameInfo.set('inReady', true);
 
       await genChannel.send(
