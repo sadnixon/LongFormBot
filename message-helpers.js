@@ -33,6 +33,9 @@ const standardEmbed = (header, message, team = 'Neutral') => {
 };
 
 async function startGame(interaction) {
+  return interaction.channel.send(
+    'Game cannot start, because the bot is sleeping!',
+  );
   await gameInfo.set('inPlay', true);
   await gameInfo.set('inReady', false);
   await gameInfo.set('readyPlayers', []);
