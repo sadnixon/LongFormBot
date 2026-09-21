@@ -52,13 +52,6 @@ async function execute(interaction, user) {
     );
   }
 
-  gameState.missionSizes =
-    gameState.players.length === 13
-      ? [4, 5, 6, 7, 6, 7, 7]
-      : gameState.players.length < 17
-        ? [4, 5, 6, 7, 7, 8, 8]
-        : [5, 6, 7, 8, 8, 9, 9];
-
   //CURRENT PLAYERS
   const currentPlayerIdx = currentPlayers.indexOf(outUser);
   currentPlayers = currentPlayers.filter((e, i) => i !== currentPlayerIdx);

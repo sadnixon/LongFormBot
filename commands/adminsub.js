@@ -180,6 +180,9 @@ async function execute(interaction, user) {
   const paragraphsChannel = await interaction.guild.channels.fetch(
     gameChannels['paragraphs'].channelId,
   );
+  const heavenChannel = await interaction.guild.channels.fetch(
+    gameChannels['heaven'].channelId,
+  );
   const loversChannel = await interaction.guild.channels.fetch(
     gameChannels['lovers'].channelId,
   );
@@ -207,6 +210,11 @@ async function execute(interaction, user) {
     [PermissionFlagsBits.SendMessages]: true,
     [PermissionFlagsBits.ReadMessageHistory]: true,
   });
+  await heavenChannel.permissionOverwrites.edit(inUser, {
+    [PermissionFlagsBits.ViewChannel]: false,
+    [PermissionFlagsBits.SendMessages]: false,
+    [PermissionFlagsBits.ReadMessageHistory]: false,
+  });
 
   await genChannel.permissionOverwrites.edit(outUser, {
     [PermissionFlagsBits.SendMessages]: false,
@@ -219,6 +227,11 @@ async function execute(interaction, user) {
   });
   await paragraphsChannel.permissionOverwrites.edit(outUser, {
     [PermissionFlagsBits.SendMessages]: false,
+  });
+  await heavenChannel.permissionOverwrites.edit(outUser, {
+    [PermissionFlagsBits.ViewChannel]: true,
+    [PermissionFlagsBits.SendMessages]: false,
+    [PermissionFlagsBits.ReadMessageHistory]: true,
   });
   await loversChannel.permissionOverwrites.edit(outUser, {
     [PermissionFlagsBits.ViewChannel]: false,
