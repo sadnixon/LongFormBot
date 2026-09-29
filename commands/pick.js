@@ -97,7 +97,8 @@ async function execute(interaction, user) {
     !['pickWait', 'pickWaitSupermaj'].includes(gameState.currentState) ||
     !gameState.missionPickers[gameState.missionIndex].includes(
       interaction.user.id,
-    )
+    ) ||
+    interaction.user.id in gameState.missionPicks[gameState.missionIndex]
   ) {
     return interaction.editReply({
       content: `It's not time for you to make a pick!`,

@@ -103,7 +103,8 @@ async function execute(interaction, user) {
   if (
     !gameOngoing ||
     !['pickWait', 'pickWaitSupermaj'].includes(gameState.currentState) ||
-    !gameState.missionPickers[gameState.missionIndex].includes(userId)
+    !gameState.missionPickers[gameState.missionIndex].includes(userId) ||
+    userId in gameState.missionPicks[gameState.missionIndex]
   ) {
     return interaction.editReply({
       content: `It's not time for you to make a pick!`,
@@ -120,12 +121,17 @@ async function execute(interaction, user) {
   if (
     !currentPlayers.includes(userId) ||
     !(
-      (['Mordred', 'Witch', 'Morgana', 'Assassin', 'Guinevere','Spy'].includes(
+      (['Mordred', 'Witch', 'Morgana', 'Assassin', 'Guinevere', 'Spy'].includes(
         gameState.players[puppeteerIndex]?.role,
       ) &&
-        ['Mordred', 'Witch', 'Morgana', 'Assassin', 'Guinevere','Spy'].includes(
-          gameState.players[playerIndex]?.role,
-        )) ||
+        [
+          'Mordred',
+          'Witch',
+          'Morgana',
+          'Assassin',
+          'Guinevere',
+          'Spy',
+        ].includes(gameState.players[playerIndex]?.role)) ||
       user.isAuthorized
     )
   ) {
