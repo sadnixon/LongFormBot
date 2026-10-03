@@ -63,7 +63,7 @@ async function execute(interaction, user) {
   const gameOngoing = await gameInfo.get('inPlay');
   const gameReadying = await gameInfo.get('inReady');
   const currentPlayers = (await gameInfo.get('players')) ?? [];
-  if (gameOngoing || gameReadying || currentPlayers.length >= 17) {
+  if (gameOngoing || gameReadying || currentPlayers.length >= 100) {
     await interaction.editReply({
       content: `The game is ongoing/full, nobody can join!`,
       ephemeral: true,
@@ -94,7 +94,7 @@ async function execute(interaction, user) {
       ephemeral: true,
     });
 
-    if (currentPlayers.length === 17) {
+    if (currentPlayers.length === 100) {
       await gameInfo.set('inReady', true);
 
       await genChannel.send(
